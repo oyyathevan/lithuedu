@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subject - LITHU EDU HYB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #0d47a1;
+      --bg: #f0f4f8;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --success: #10b981;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+      color: white;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo span {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .welcome-user {
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: rgba(255,255,255,0.15);
+      padding: 8px 14px;
+      border-radius: 20px;
+      display: none;
+    }
+
+    .welcome-user.show { display: inline-block; }
+
+    .back-btn {
+      background: white;
+      color: var(--primary);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    main {
+      flex: 1;
+      padding: 40px 32px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .subject-hero {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      text-align: center;
+      margin-bottom: 32px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .subject-hero .big-icon {
+      font-size: 4.5rem;
+      margin-bottom: 12px;
+    }
+
+    .subject-hero h1 {
+      font-size: 2.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .subject-hero .tagline {
+      color: var(--text-light);
+      font-size: 1.05rem;
+    }
+
+    .content-section {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .content-section h2 {
+      font-size: 1.3rem;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .content-section p {
+      color: var(--text-light);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .topics-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .topics-list li {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+
+    .topics-list li:hover {
+      background: #eff6ff;
+      border-color: var(--primary);
+      transform: translateX(4px);
+    }
+
+    .topics-list li::before {
+      content: '▸';
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .sim-box {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .sim-box p {
+      margin: 0;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .sim-launch {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .sim-launch:hover {
+      background: var(--primary-dark);
+    }
+
+    .error-box {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+
+    .error-box h2 {
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    footer {
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 24px;
+      margin-top: auto;
+    }
+
+    footer .signature {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.5rem;
+      color: #94a3b8;
+    }
+
+    footer .tagline {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 14px 16px; }
+      .logo span { display: none; }
+      main { padding: 24px 16px; }
+      .subject-hero { padding: 28px 20px; }
+      .subject-hero h1 { font-size: 1.7rem; }
+      .content-section { padding: 20px; }
+      .topics-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">
+      🌐 LITHU EDU HYB
+      <span>Education Hub</span>
+    </a>
+    <div class="header-right">
+      <span id="welcomeUser" class="welcome-user"></span>
+      <a href="index.html" class="back-btn">← Back to Home</a>
+    </div>
+  </header>
+
+  <main id="mainContent">
+    <!-- Filled by JS -->
+  </main>
+
+  <footer>
+    <div class="signature">@Oyyathevan</div>
+    <div class="tagline">Crafting knowledge experiences</div>
+  </footer>
+
+  <script>
+    // Full subject details
+    const subjectsData = {
+      1: {
+        name: "Mathematics",
+        icon: "📐",
+        tagline: "The language of patterns, logic and the universe",
+        description: "Mathematics is the foundation of science, technology and everyday problem-solving. From basic arithmetic to advanced calculus and abstract algebra, it trains the mind to think logically and creatively.",
+        topics: [
+          "Algebra & Equations",
+          "Geometry & Trigonometry",
+          "Calculus (Limits, Derivatives, Integrals)",
+          "Statistics & Probability",
+          "Linear Algebra",
+          "Number Theory",
+          "Discrete Mathematics",
+          "Mathematical Modelling"
+        ],
+        sim: "Interactive equation solver & graph plotter",
+        simNote: "Plot functions, solve equations step-by-step and explore geometric constructions."
+      },
+      2: {
+        name: "Physics",
+        icon: "⚛️",
+        tagline: "Understanding the laws that govern the universe",
+        description: "Physics explores matter, energy, space and time. It explains everything from the motion of planets to the behaviour of subatomic particles and forms the basis of modern technology.",
+        topics: [
+          "Mechanics & Motion",
+          "Waves & Oscillations",
+          "Thermodynamics",
+          "Electricity & Magnetism",
+          "Optics",
+          "Modern Physics & Quantum",
+          "Relativity",
+          "Astrophysics"
+        ],
+        sim: "Motion, gravity & wave simulations",
+        simNote: "Experiment with gravity, projectiles, simple harmonic motion and wave interference."
+      },
+      3: {
+        name: "Chemistry",
+        icon: "🧪",
+        tagline: "The science of matter and its transformations",
+        description: "Chemistry studies the composition, structure, properties and reactions of substances. It connects the microscopic world of atoms and molecules to the macroscopic world we experience.",
+        topics: [
+          "Atomic Structure",
+          "Periodic Table & Bonding",
+          "Stoichiometry & Reactions",
+          "Acids, Bases & Salts",
+          "Organic Chemistry",
+          "Thermochemistry",
+          "Electrochemistry",
+          "Chemical Equilibrium"
+        ],
+        sim: "Molecule builder & reaction balancer",
+        simNote: "Build 3D molecules, balance chemical equations and visualise reaction pathways."
+      },
+      4: {
+        name: "Biology",
+        icon: "🧬",
+        tagline: "The study of life and living organisms",
+        description: "Biology explores the structure, function, growth, origin and evolution of living things. From cells to ecosystems, it helps us understand ourselves and the natural world.",
+        topics: [
+          "Cell Biology",
+          "Genetics & DNA",
+          "Human Anatomy & Physiology",
+          "Ecology & Environment",
+          "Evolution",
+          "Microbiology",
+          "Botany & Zoology",
+          "Biotechnology"
+        ],
+        sim: "Cell explorer & DNA helix viewer",
+        simNote: "Navigate inside a cell, explore organelles and unwind the DNA double helix."
+      },
+      5: {
+        name: "Computer Science",
+        icon: "💻",
+        tagline: "The science of computation and digital systems",
+        description: "Computer Science covers algorithms, programming, data structures, systems and the theory of computation. It powers almost every modern technology we use daily.",
+        topics: [
+          "Programming Fundamentals",
+          "Data Structures & Algorithms",
+          "Operating Systems",
+          "Computer Networks",
+          "Databases",
+          "Web & App Development",
+          "Cybersecurity",
+          "Artificial Intelligence basics"
+        ],
+        sim: "Code playground & algorithm visualizer",
+        simNote: "Write and run code live, visualise sorting algorithms and step through data structures."
+      },
+      6: {
+        name: "Data Science",
+        icon: "📊",
+        tagline: "Extracting knowledge and insights from data",
+        description: "Data Science combines statistics, programming and domain knowledge to turn raw data into actionable insights. It is one of the most in-demand skills of the 21st century.",
+        topics: [
+          "Data Collection & Cleaning",
+          "Exploratory Data Analysis",
+          "Statistics for Data Science",
+          "Data Visualization",
+          "Machine Learning Basics",
+          "Python for Data Science",
+          "SQL & Databases",
+          "Big Data Concepts"
+        ],
+        sim: "Data viz lab & ML model trainer",
+        simNote: "Upload datasets, create interactive charts and train simple machine-learning models."
+      },
+      7: {
+        name: "Engineering",
+        icon: "⚙️",
+        tagline: "Applying science to design and build solutions",
+        description: "Engineering turns scientific knowledge into practical products, systems and infrastructure. It spans mechanical, electrical, civil, software and many other disciplines.",
+        topics: [
+          "Engineering Design Process",
+          "Mechanics of Materials",
+          "Electrical Circuits",
+          "Thermodynamics & Fluids",
+          "Control Systems",
+          "CAD & Modelling",
+          "Project Management",
+          "Sustainable Engineering"
+        ],
+        sim: "Circuit designer & stress analyzer",
+        simNote: "Design simple circuits, simulate current flow and analyse structural stress."
+      },
+      8: {
+        name: "History",
+        icon: "🏛️",
+        tagline: "Understanding the past to shape the future",
+        description: "History examines human societies across time — their cultures, politics, economies and ideas. It develops critical thinking and helps us make sense of the present.",
+        topics: [
+          "Ancient Civilizations",
+          "Medieval World",
+          "Modern History",
+          "World Wars & Conflicts",
+          "Independence Movements",
+          "Social & Cultural History",
+          "Economic History",
+          "Historiography"
+        ],
+        sim: "Timeline explorer & map journeys",
+        simNote: "Travel interactive timelines and explore historical maps of empires and events."
+      },
+      9: {
+        name: "Literature",
+        icon: "📖",
+        tagline: "The art of language, stories and human expression",
+        description: "Literature explores novels, poetry, drama and essays that reflect the human condition. It builds empathy, critical analysis and appreciation for language and culture.",
+        topics: [
+          "Poetry & Poetic Devices",
+          "Prose & Fiction",
+          "Drama & Theatre",
+          "Literary Theory",
+          "World Literature",
+          "Indian Writing in English",
+          "Creative Writing",
+          "Critical Appreciation"
+        ],
+        sim: "Story map & poetry analyzer",
+        simNote: "Map narrative structures, analyse rhyme schemes and explore character arcs."
+      },
+      10: {
+        name: "Economics",
+        icon: "📈",
+        tagline: "How societies allocate scarce resources",
+        description: "Economics studies production, distribution and consumption of goods and services. It explains markets, government policy, growth and the everyday choices people make.",
+        topics: [
+          "Microeconomics",
+          "Macroeconomics",
+          "Supply & Demand",
+          "Market Structures",
+          "National Income & GDP",
+          "Money & Banking",
+          "International Trade",
+          "Development Economics"
+        ],
+        sim: "Market simulator & supply-demand curves",
+        simNote: "Adjust supply and demand, watch prices change and run simple market experiments."
+      }
+    };
+
+    // Get subject id from URL
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id'), 10);
+    const subject = subjectsData[id];
+
+    const main = document.getElementById('mainContent');
+
+    if (!subject) {
+      main.innerHTML = `
+        <div class="error-box">
+          <h2>Subject not found</h2>
+          <p>The requested subject does not exist.</p>
+          <br>
+          <a href="index.html" class="back-btn">← Back to Home</a>
+        </div>
+      `;
+      document.title = "Not Found - LITHU EDU HYB";
+    } else {
+      document.title = subject.name + " - LITHU EDU HYB";
+
+      main.innerHTML = `
+        <div class="subject-hero">
+          <div class="big-icon">${subject.icon}</div>
+          <h1>${subject.name}</h1>
+          <p class="tagline">${subject.tagline}</p>
+        </div>
+
+        <div class="content-section">
+          <h2>📖 About this Subject</h2>
+          <p>${subject.description}</p>
+        </div>
+
+        <div class="content-section">
+          <h2>📋 Key Topics</h2>
+          <ul class="topics-list">
+            ${subject.topics.map(t => `<li>${t}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="content-section">
+          <h2>🧪 Simulation</h2>
+          <div class="sim-box">
+            <div>
+              <p>${subject.sim}</p>
+              <p style="font-size:0.9rem;color:var(--text-light);margin-top:6px;">${subject.simNote}</p>
+            </div>
+            <button class="sim-launch" onclick="alert('Launching ${subject.name} simulation (demo mode)')">
+              Launch Simulation
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Show welcome name if logged in
+    const storedName = sessionStorage.getItem('lithuUsername');
+    if (sessionStorage.getItem('lithuLoggedIn') === 'true' && storedName) {
+      const el = document.getElementById('welcomeUser');
+      el.textContent = 'Welcome: ' + storedName;
+      el.classList.add('show');
+    }
+  </script>
+</body>
+</html>

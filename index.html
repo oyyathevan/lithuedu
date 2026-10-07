@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LITHU EDU HUB - Education Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #0d47a1;
+      --accent: #ff6f00;
+      --bg: #f0f4f8;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ========== OPENING ANIMATION ========== */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0d47a1 0%, #1a73e8 50%, #42a5f5 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .globe-container {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 30px;
+    }
+
+    .globe {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle at 35% 30%, #81d4fa 0%, #29b6f6 25%, #0288d1 50%, #01579b 80%, #00251a 100%);
+      box-shadow: 
+        inset -25px -20px 50px rgba(0,0,0,0.45),
+        inset 12px 10px 25px rgba(255,255,255,0.25),
+        0 0 50px rgba(33,150,243,0.7);
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      animation: spinGlobe 10s linear infinite;
+      overflow: hidden;
+    }
+
+    /* Latitude / Longitude grid lines */
+    .globe::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 14px,
+          rgba(255,255,255,0.12) 14px,
+          rgba(255,255,255,0.12) 15px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0px,
+          transparent 18px,
+          rgba(255,255,255,0.08) 18px,
+          rgba(255,255,255,0.08) 19px
+        );
+      opacity: 0.7;
+    }
+
+    /* World map style continents */
+    .globe::before {
+      content: '';
+      position: absolute;
+      width: 220%;
+      height: 100%;
+      left: 0;
+      background: 
+        /* North America-ish */
+        radial-gradient(ellipse 28% 35% at 18% 32%, #2e7d32 0%, #1b5e20 70%, transparent 71%),
+        /* South America */
+        radial-gradient(ellipse 14% 28% at 28% 62%, #388e3c 0%, #1b5e20 70%, transparent 71%),
+        /* Europe */
+        radial-gradient(ellipse 12% 14% at 48% 28%, #43a047 0%, #2e7d32 70%, transparent 71%),
+        /* Africa */
+        radial-gradient(ellipse 18% 32% at 52% 52%, #2e7d32 0%, #1b5e20 70%, transparent 71%),
+        /* Asia */
+        radial-gradient(ellipse 32% 30% at 72% 30%, #388e3c 0%, #1b5e20 70%, transparent 71%),
+        /* Australia */
+        radial-gradient(ellipse 14% 12% at 82% 68%, #43a047 0%, #2e7d32 70%, transparent 71%),
+        /* Antarctica hint */
+        radial-gradient(ellipse 40% 8% at 50% 92%, #81c784 0%, transparent 70%);
+      animation: continents 16s linear infinite;
+    }
+
+    .hand {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 70px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+      animation: handPulse 2s ease-in-out infinite;
+    }
+
+    .knowledge-symbol {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 80px;
+      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .knowledge-symbol.show {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .splash-text {
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.5s forwards;
+    }
+
+    .splash-sub {
+      color: rgba(255,255,255,0.85);
+      font-size: 1rem;
+      margin-top: 8px;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.8s forwards;
+    }
+
+    @keyframes spinGlobe {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes continents {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes handPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========== HEADER ========== */
+    header {
+      background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+      color: white;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo span {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .welcome-user {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.95);
+      background: rgba(255,255,255,0.15);
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .welcome-user.show {
+      display: inline-block;
+    }
+
+    #loginBtn {
+      background: white;
+      color: var(--primary);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    #loginBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      background: #f0f7ff;
+    }
+
+    #loginBtn.logged-in {
+      background: var(--success);
+      color: white;
+    }
+
+    /* ========== MAIN CONTENT ========== */
+    main {
+      flex: 1;
+      padding: 40px 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .welcome-banner {
+      text-align: center;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .welcome-banner.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .welcome-banner h1 {
+      font-size: 2.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .welcome-banner p {
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.7s ease 0.2s;
+    }
+
+    .content-grid.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .section-card h2 {
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+    }
+
+    .subject-card {
+      background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .subject-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(26,115,232,0.15);
+      border-color: var(--primary);
+      background: linear-gradient(145deg, #eff6ff, #dbeafe);
+    }
+
+    .subject-card .icon {
+      font-size: 2rem;
+    }
+
+    .subject-card .name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Simulations */
+    .sim-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sim-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sim-header {
+      background: #f8fafc;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .sim-header:hover {
+      background: #eff6ff;
+    }
+
+    .sim-header .arrow {
+      transition: transform 0.3s ease;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .sim-item.open .sim-header .arrow {
+      transform: rotate(180deg);
+    }
+
+    .sim-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      background: white;
+    }
+
+    .sim-item.open .sim-body {
+      max-height: 200px;
+      padding: 16px 18px;
+    }
+
+    .sim-body p {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+
+    .sim-btn {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .sim-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Locked state before login */
+    .locked-overlay {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+
+    .locked-overlay .lock-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .locked-overlay h3 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    /* ========== LOGIN MODAL ========== */
+    #loginModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    #loginModal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    #loginModal.show .modal-content {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-content h2 {
+      text-align: center;
+      margin-bottom: 8px;
+      color: var(--primary-dark);
+    }
+
+    .modal-content .subtitle {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .error-msg {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 8px;
+      display: none;
+      text-align: center;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 24px;
+      margin-top: auto;
+    }
+
+    footer .signature {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.6rem;
+      color: #94a3b8;
+      letter-spacing: 1px;
+    }
+
+    footer .tagline {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      header {
+        padding: 14px 16px;
+      }
+      .logo {
+        font-size: 1.15rem;
+      }
+      .logo span {
+        display: none;
+      }
+      .welcome-user {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+      }
+      main {
+        padding: 24px 16px;
+      }
+      .subjects-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Opening Animation -->
+  <div id="splash">
+    <div class="globe-container">
+      <div class="globe"></div>
+      <div class="hand">🤚</div>
+      <div class="knowledge-symbol" id="knowledgeSymbol">📖</div>
+    </div>
+    <div class="splash-text">LITHU EDU HUB</div>
+    <div class="splash-sub">Knowledge in Your Hands</div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      🌐 LITHU EDU HUB
+      <span>Education Hub</span>
+    </div>
+    <div class="header-right">
+      <span id="welcomeUser" class="welcome-user"></span>
+      <button id="loginBtn">Login</button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <div class="welcome-banner" id="welcomeBanner">
+      <h1>Welcome to LITHU EDU HUB</h1>
+      <p>Explore subjects and interactive simulations</p>
+    </div>
+
+    <div id="lockedView" class="locked-overlay">
+      <div class="lock-icon">🔒</div>
+      <h3>Please Login to Access Content</h3>
+      <p>Sign in to unlock subject lists and simulations</p>
+    </div>
+
+    <div class="content-grid" id="contentGrid" style="display: none;">
+      <!-- Subjects Column -->
+      <div class="section-card">
+        <h2>📚 Subjects</h2>
+        <div class="subjects-grid" id="subjectsGrid">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Simulations Column -->
+      <div class="section-card">
+        <h2>🧪 Simulations</h2>
+        <div class="sim-list" id="simList">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="signature">@Oyyathevan</div>
+    <div class="tagline">Crafting knowledge experiences</div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div id="loginModal">
+    <div class="modal-content">
+      <h2>🔐 Login</h2>
+      <p class="subtitle">Enter your credentials to continue</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Enter username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter password" required autocomplete="current-password">
+        </div>
+        <div class="error-msg" id="errorMsg">Invalid credentials. Please try again.</div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancelLogin">Cancel</button>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ========== SUBJECTS DATA ==========
+    // Each subject has TWO separate links:
+    //   theoryLink  → opened when you click the subject card (theory / notes)
+    //   simLink     → opened from the Simulations column (interactive / demo)
+    // Change the paths to your real pages.
+    const subjects = [
+      {
+        id: 1,
+        name: "Design Thinking & Innovation      (JNTUK-R26)",
+        icon: "🛠️",
+        sim: " DTI interactive activities & design challenges",
+        theoryLink: "dti-notes/index.html",
+        simLink: "dti-notes/playground.html"
+      },
+      {
+        id: 2,
+        name: "Mathematics",
+        icon: "📐",
+        sim: "Interactive equation solver & graph plotter",
+        theoryLink: "math/theory.html",
+        simLink: "math/simulation.html"
+      },
+      {
+        id: 3,
+        name: "Physics",
+        icon: "⚛️",
+        sim: "Motion, gravity & wave simulations",
+        theoryLink: "physics/theory.html",
+        simLink: "physics/simulation.html"
+      },
+      {
+        id: 4,
+        name: "Chemistry",
+        icon: "🧪",
+        sim: "Molecule builder & reaction balancer",
+        theoryLink: "chemistry/theory.html",
+        simLink: "chemistry/simulation.html"
+      },
+      {
+        id: 5,
+        name: "Biology",
+        icon: "🧬",
+        sim: "Cell explorer & DNA helix viewer",
+        theoryLink: "biology/theory.html",
+        simLink: "biology/simulation.html"
+      },
+      {
+        id: 6,
+        name: "Computer Science",
+        icon: "💻",
+        sim: "Code playground & algorithm visualizer",
+        theoryLink: "cs/theory.html",
+        simLink: "cs/simulation.html"
+      },
+      {
+        id: 7,
+        name: "Data Science",
+        icon: "📊",
+        sim: "Data viz lab & ML model trainer",
+        theoryLink: "datascience/theory.html",
+        simLink: "datascience/simulation.html"
+      },
+      {
+        id: 8,
+        name: "Engineering",
+        icon: "⚙️",
+        sim: "Circuit designer & stress analyzer",
+        theoryLink: "engineering/theory.html",
+        simLink: "engineering/simulation.html"
+      },
+      {
+        id: 9,
+        name: "History",
+        icon: "🏛️",
+        sim: "Timeline explorer & map journeys",
+        theoryLink: "history/theory.html",
+        simLink: "history/simulation.html"
+      },
+      {
+        id: 10,
+        name: "Literature",
+        icon: "📖",
+        sim: "Story map & poetry analyzer",
+        theoryLink: "literature/theory.html",
+        simLink: "literature/simulation.html"
+      }
+    ];
+
+    // ========== STATE ==========
+    let isLoggedIn = false;
+    let credentials = {};   // will be loaded from credentials.json
+
+    // ========== SPLASH ANIMATION ==========
+    window.addEventListener('load', () => {
+      const splash = document.getElementById('splash');
+      const knowledge = document.getElementById('knowledgeSymbol');
+      const globe = document.querySelector('.globe');
+      const hand = document.querySelector('.hand');
+
+      // After 2.5s morph globe into book
+      setTimeout(() => {
+        globe.style.opacity = '0';
+        hand.style.opacity = '0';
+        knowledge.classList.add('show');
+        knowledge.textContent = '💡'; // light bulb as knowledge
+      }, 2500);
+
+      // Hide splash after 4s total
+      setTimeout(() => {
+        splash.classList.add('hidden');
+        // Check if already logged in (session)
+        if (sessionStorage.getItem('lithuLoggedIn') === 'true') {
+          unlockContent();
+        }
+      }, 4000);
+    });
+
+    // ========== RENDER CONTENT ==========
+    function renderSubjects() {
+      const grid = document.getElementById('subjectsGrid');
+      grid.innerHTML = subjects.map(s => `
+        <a href="${s.theoryLink}" class="subject-card" data-id="${s.id}" title="Open ${s.name} Theory">
+          <div class="icon">${s.icon}</div>
+          <div class="name">${s.name}</div>
+          <div style="font-size:0.7rem;color:#64748b;margin-top:2px;">Theory</div>
+        </a>
+      `).join('');
+    }
+
+    function renderSimulations() {
+      const list = document.getElementById('simList');
+      list.innerHTML = subjects.map(s => `
+        <div class="sim-item" data-id="${s.id}">
+          <div class="sim-header">
+            <span>${s.icon} ${s.name} – Simulation</span>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="sim-body">
+            <p>${s.sim}</p>
+            <a href="${s.simLink}" class="sim-btn">Open Simulation →</a>
+          </div>
+        </div>
+      `).join('');
+
+      // Toggle accordion
+      list.querySelectorAll('.sim-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const item = header.parentElement;
+          const wasOpen = item.classList.contains('open');
+          // Close others
+          list.querySelectorAll('.sim-item').forEach(i => i.classList.remove('open'));
+          if (!wasOpen) item.classList.add('open');
+        });
+      });
+    }
+
+    function unlockContent(username) {
+      isLoggedIn = true;
+      sessionStorage.setItem('lithuLoggedIn', 'true');
+      if (username) {
+        sessionStorage.setItem('lithuUsername', username);
+      }
+      const displayName = username || sessionStorage.getItem('lithuUsername') || 'User';
+
+      document.getElementById('lockedView').style.display = 'none';
+      document.getElementById('contentGrid').style.display = 'grid';
+      document.getElementById('welcomeBanner').classList.add('visible');
+      document.getElementById('contentGrid').classList.add('visible');
+      document.getElementById('loginBtn').textContent = 'Logout';
+      document.getElementById('loginBtn').classList.add('logged-in');
+
+      // Show Welcome: name near login button
+      const welcomeEl = document.getElementById('welcomeUser');
+      welcomeEl.textContent = 'Welcome: ' + displayName;
+      welcomeEl.classList.add('show');
+
+      renderSubjects();
+      renderSimulations();
+    }
+
+    function lockContent() {
+      isLoggedIn = false;
+      sessionStorage.removeItem('lithuLoggedIn');
+      sessionStorage.removeItem('lithuUsername');
+      document.getElementById('lockedView').style.display = 'block';
+      document.getElementById('contentGrid').style.display = 'none';
+      document.getElementById('welcomeBanner').classList.remove('visible');
+      document.getElementById('contentGrid').classList.remove('visible');
+      document.getElementById('loginBtn').textContent = 'Login';
+      document.getElementById('loginBtn').classList.remove('logged-in');
+
+      // Hide welcome message
+      const welcomeEl = document.getElementById('welcomeUser');
+      welcomeEl.textContent = '';
+      welcomeEl.classList.remove('show');
+    }
+
+    // ========== LOGIN LOGIC ==========
+    const loginBtn = document.getElementById('loginBtn');
+    const loginModal = document.getElementById('loginModal');
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const cancelLogin = document.getElementById('cancelLogin');
+
+    loginBtn.addEventListener('click', () => {
+      if (isLoggedIn) {
+        lockContent();
+      } else {
+        loginModal.classList.add('show');
+        document.getElementById('username').focus();
+      }
+    });
+
+    cancelLogin.addEventListener('click', () => {
+      loginModal.classList.remove('show');
+      errorMsg.classList.remove('show');
+      loginForm.reset();
+    });
+
+    loginModal.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        loginModal.classList.remove('show');
+        errorMsg.classList.remove('show');
+        loginForm.reset();
+      }
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value;
+
+      // Always fetch latest credentials.json so you can add users anytime
+      try {
+        const response = await fetch('credentials.json?t=' + Date.now()); // cache-bust
+        if (!response.ok) throw new Error('Could not load credentials.json');
+        credentials = await response.json();
+
+        if (credentials[user] && credentials[user] === pass) {
+          errorMsg.classList.remove('show');
+          loginModal.classList.remove('show');
+          loginForm.reset();
+          unlockContent(user);   // pass username for Welcome message
+        } else {
+          errorMsg.classList.add('show');
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+        }
+      } catch (err) {
+        console.error(err);
+        errorMsg.textContent = 'Error loading login data. Make sure credentials.json is in the same folder and you are using a local server.';
+        errorMsg.classList.add('show');
+      }
+    });
+
+    // Escape key closes modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && loginModal.classList.contains('show')) {
+        loginModal.classList.remove('show');
+        errorMsg.classList.remove('show');
+        loginForm.reset();
+      }
+    });
+  </script>
+</body>
+</html>
