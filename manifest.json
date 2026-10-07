@@ -1,7 +1,7 @@
 {
   "name": "LithuEdu",
   "short_name": "LithuEdu",
-  "start_url": "/index.html",
+  "start_url": "/lithuedu/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
