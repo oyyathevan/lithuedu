@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Filled Lab Sheet – Unit I | DTI Notes</title>
+
+  <!-- Protect page -->
+  <script src="../auth-check.js"></script>
+  <script>
+    if (sessionStorage.getItem('lithuLoggedIn') !== 'true') {
+      window.location.replace('../index.html');
+    }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #0d47a1;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --green: #10b981;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(90deg, #0d47a1, #1a73e8);
+      color: white;
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo span {
+      background: rgba(255,255,255,0.2);
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .welcome-user {
+      font-size: 0.88rem;
+      background: rgba(255,255,255,0.15);
+      padding: 7px 14px;
+      border-radius: 20px;
+    }
+    .btn {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: 0.2s;
+    }
+    .btn-home {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+    .btn-home:hover { background: rgba(255,255,255,0.3); }
+    .btn-practical {
+      background: #f59e0b;
+      color: white;
+      border: none;
+    }
+    .btn-practical:hover { background: #d97706; }
+    .btn-logout {
+      background: var(--green);
+      color: white;
+    }
+    .btn-logout:hover { background: #059669; }
+
+    /* Layout */
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 28px 18px 50px;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+      color: #fff;
+      padding: 28px 30px;
+      border-radius: 16px;
+      margin-bottom: 22px;
+      box-shadow: 0 10px 26px rgba(37,99,235,.22);
+    }
+    .hero .tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+    .hero h1 {
+      font-size: 1.65rem;
+      margin: 0 0 8px;
+      font-weight: 800;
+    }
+    .hero p {
+      opacity: 0.92;
+      font-size: 0.92rem;
+      max-width: 640px;
+      margin: 0;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .badge {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .note-box {
+      background: #FEF3C7;
+      border-left: 5px solid #F59E0B;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+      color: #92400E;
+    }
+    .note-box strong { color: #78350F; }
+
+    /* Activity card */
+    .activity {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 6px 22px rgba(0,0,0,0.07);
+      border: 1px solid var(--border);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .activity-head {
+      background: linear-gradient(90deg, #eff6ff, #f8fafc);
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ah-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .ah-num {
+      background: #2563EB;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .ah-unit {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .ah-title {
+      font-size: 1.25rem;
+      color: var(--primary-dark);
+      margin: 4px 0 6px;
+    }
+    .ah-meta {
+      display: flex;
+      gap: 14px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .activity-body { padding: 22px; }
+
+    .section {
+      margin-bottom: 20px;
+    }
+    .section h4 {
+      font-size: 0.95rem;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section p, .section li {
+      font-size: 0.9rem;
+      color: #334155;
+    }
+    .section ul, .section ol {
+      padding-left: 20px;
+      margin-top: 6px;
+    }
+    .section li { margin-bottom: 4px; }
+
+    .filled {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 8px;
+    }
+    .filled li { margin-bottom: 6px; }
+
+    .quote {
+      background: #f8fafc;
+      border-left: 4px solid #2563EB;
+      padding: 10px 14px;
+      margin: 8px 0;
+      font-style: italic;
+      color: #1e40af;
+      font-size: 0.9rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    table.map-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 0.88rem;
+    }
+    table.map-table th,
+    table.map-table td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.map-table th {
+      background: #eff6ff;
+      color: var(--primary-dark);
+      font-weight: 700;
+      width: 110px;
+    }
+    table.map-table tr:nth-child(even) td { background: #f8fafc; }
+
+    .persona-card {
+      background: linear-gradient(145deg, #eff6ff, #f8fafc);
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 8px;
+    }
+    .persona-card h5 {
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+    .persona-card p { margin-bottom: 6px; font-size: 0.9rem; }
+
+    .pain {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    .opportunity {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    .student-flow {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-left: 5px solid #f97316;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 0.88rem;
+    }
+    .student-flow h4 {
+      color: #c2410c;
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+    }
+    .student-flow ol {
+      padding-left: 18px;
+      color: #9a3412;
+      margin: 0;
+    }
+    .student-flow li { margin-bottom: 4px; }
+
+    .persona-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    @media (max-width: 640px) {
+      .persona-grid { grid-template-columns: 1fr; }
+    }
+
+    .reflection {
+      background: #faf5ff;
+      border: 1px solid #e9d5ff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 8px;
+    }
+    .reflection p {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: #5b21b6;
+    }
+
+    /* Extra reference sections */
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 10px;
+    }
+    @media (max-width: 640px) {
+      .ref-grid { grid-template-columns: 1fr; }
+      header { padding: 12px 14px; }
+      .logo span { display: none; }
+      .welcome-user { font-size: 0.8rem; padding: 6px 10px; }
+    }
+
+    .ref-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.88rem;
+    }
+    .ref-card strong { color: var(--primary-dark); }
+
+    .summary-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .summary-box h3 {
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      font-size: 1.05rem;
+    }
+    .summary-box ol {
+      padding-left: 20px;
+      font-size: 0.9rem;
+      color: #334155;
+    }
+    .summary-box li { margin-bottom: 8px; }
+
+    /* ===== FLOW DIAGRAMS ===== */
+    .flow-wrap {
+      overflow-x: auto;
+      padding: 8px 0 16px;
+      margin-top: 12px;
+    }
+    .flow-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      min-width: max-content;
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+    .flow-step {
+      background: white;
+      border: 2px solid #2563EB;
+      border-radius: 12px;
+      padding: 12px 14px;
+      min-width: 130px;
+      max-width: 160px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.12);
+      position: relative;
+    }
+    .flow-step .fs-num {
+      display: inline-block;
+      background: #2563EB;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+    }
+    .flow-step .fs-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #0d47a1;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .flow-step .fs-sub {
+      font-size: 0.72rem;
+      color: #64748b;
+      line-height: 1.35;
+    }
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      color: #2563EB;
+      font-size: 1.4rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    /* Journey emotion colors */
+    .flow-step.emo-neutral { border-color: #94a3b8; }
+    .flow-step.emo-neutral .fs-num { background: #64748b; }
+    .flow-step.emo-anxious { border-color: #f59e0b; }
+    .flow-step.emo-anxious .fs-num { background: #d97706; }
+    .flow-step.emo-frustrated { border-color: #ef4444; }
+    .flow-step.emo-frustrated .fs-num { background: #dc2626; }
+    .flow-step.emo-tired { border-color: #8b5cf6; }
+    .flow-step.emo-tired .fs-num { background: #7c3aed; }
+    .flow-step.emo-embarrassed { border-color: #ec4899; }
+    .flow-step.emo-embarrassed .fs-num { background: #db2777; }
+    .flow-step.emo-resigned { border-color: #6b7280; }
+    .flow-step.emo-resigned .fs-num { background: #4b5563; }
+
+    .flow-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+    .flow-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .flow-legend i {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    /* Vertical process flow (overall 5 activities) */
+    .vflow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin: 16px 0 8px;
+    }
+    .vflow-step {
+      background: white;
+      border: 2px solid #2563EB;
+      border-radius: 12px;
+      padding: 14px 20px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.1);
+    }
+    .vflow-step .vs-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .vflow-step .vs-num {
+      background: #2563EB;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .vflow-step .vs-title {
+      font-weight: 700;
+      color: #0d47a1;
+      font-size: 0.95rem;
+    }
+    .vflow-step .vs-out {
+      font-size: 0.82rem;
+      color: #475569;
+      padding-left: 4px;
+    }
+    .vflow-step .vs-out strong { color: #059669; }
+    .vflow-arrow {
+      color: #2563EB;
+      font-size: 1.5rem;
+      line-height: 1;
+      padding: 4px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+    footer .sig {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: #64748b;
+    }
+
+    @media print {
+      header, .btn-logout, .btn-home { display: none !important; }
+      .activity { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="../index.html" class="logo">
+      🌐 LITHU EDU HYB
+      <span>Education Hub</span>
+    </a>
+    <div class="header-right">
+      <span class="welcome-user" id="welcomeUser">Welcome: User</span>
+      <a href="../index.html" class="btn btn-home">← Back to Home</a>
+      <button class="btn btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="tag">Unit I · Model Answer Sheet</div>
+      <h1>📋 Model Filled Lab Sheet – Foundations & Empathy</h1>
+      <p>Fully worked example answers for Activities 1.1–1.5. Use this as a reference while filling your blank practical sheet.</p>
+      <div class="badge-row">
+        <span class="badge">🧪 5 Activities</span>
+        <span class="badge">📘 Unit I</span>
+        <span class="badge">✅ Model Answers</span>
+        <a href="practical.html" class="btn btn-practical" style="margin-left:4px;">← Back to Practical Session</a>
+      </div>
+    </section>
+
+    <div class="note-box">
+      <strong>How to use:</strong> This is the <em>model / answer</em> sheet.
+      Your blank worksheet is <code>practical-u1.html</code>.
+      Adapt the context (hospital, library, cafeteria, etc.) but keep the same structure.
+    </div>
+
+    <!-- Overall Unit I process flow (stage by stage) -->
+    <div class="summary-box">
+      <h3>📌 Overall Unit I Flow — How the 5 Experiments Connect</h3>
+      <p style="font-size:0.88rem;color:#475569;margin-bottom:8px;">
+        Each activity feeds the next. Complete one fully before moving to the next.
+      </p>
+
+      <div class="vflow">
+        <div class="vflow-step">
+          <div class="vs-top">
+            <span class="vs-num">1.1</span>
+            <span class="vs-title">Observation of a Real-Life Problem</span>
+          </div>
+          <div class="vs-out">Output → <strong>5 raw facts</strong> from natural setting (bus stop)</div>
+        </div>
+        <div class="vflow-arrow">↓</div>
+
+        <div class="vflow-step">
+          <div class="vs-top">
+            <span class="vs-num">1.2</span>
+            <span class="vs-title">Conducting User Interviews</span>
+          </div>
+          <div class="vs-out">Uses observations → Output → <strong>7 questions + verbatim quotes</strong></div>
+        </div>
+        <div class="vflow-arrow">↓</div>
+
+        <div class="vflow-step">
+          <div class="vs-top">
+            <span class="vs-num">1.3</span>
+            <span class="vs-title">Preparing an Empathy Map</span>
+          </div>
+          <div class="vs-out">Uses quotes &amp; notes → Output → <strong>Says / Thinks / Does / Feels</strong></div>
+        </div>
+        <div class="vflow-arrow">↓</div>
+
+        <div class="vflow-step">
+          <div class="vs-top">
+            <span class="vs-num">1.4</span>
+            <span class="vs-title">Developing a Persona</span>
+          </div>
+          <div class="vs-out">Uses empathy map → Output → <strong>Persona (Ravi Kumar)</strong></div>
+        </div>
+        <div class="vflow-arrow">↓</div>
+
+        <div class="vflow-step">
+          <div class="vs-top">
+            <span class="vs-num">1.5</span>
+            <span class="vs-title">Preparing a User Journey Map</span>
+          </div>
+          <div class="vs-out">Uses persona → Output → <strong>Journey stages + pain point + opportunity</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ACTIVITY 1.1 ========== -->
+    <article class="activity">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 1.1</span>
+          <span class="ah-unit">Unit I</span>
+        </div>
+        <h2 class="ah-title">Observation of a Real-Life Problem</h2>
+        <div class="ah-meta">
+          <span>🎯 Objective: Observe users in a natural setting</span>
+          <span>📍 Scenario: Bus stop waiting area</span>
+        </div>
+      </div>
+      <div class="activity-body">
+
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Choose a public place (bus stop, canteen, library, etc.).</li>
+            <li>Sit quietly — do not talk to people or interrupt them.</li>
+            <li>Watch for at least 20–30 minutes.</li>
+            <li>Write only facts you see (not opinions or guesses).</li>
+            <li>List exactly 5 raw observations in the blank sheet.</li>
+            <li>Answer the 3 reflection questions honestly.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+          <h4>👀 Example A — Bus Stop (Model Answer)</h4>
+          <div class="filled">
+            <ol>
+              <li>People repeatedly check bus arrival boards.</li>
+              <li>A student uses a mobile app but complains about inaccurate timings.</li>
+              <li>Elderly passengers stand uncomfortably due to lack of seating.</li>
+              <li>Commuters form informal queues but break them when buses arrive.</li>
+              <li>Several passengers ask others for bus route confirmation.</li>
+            </ol>
+          </div>
+          <div class="reflection" style="margin-top:10px;">
+            <p><strong>Surprised most by:</strong> Frequent frustration with bus timing information.</p>
+            <p><strong>Hidden need:</strong> Reliable real-time bus tracking.</p>
+            <p><strong>Next time:</strong> Observe at peak hours for richer insights.</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>👀 Example B — College Cafeteria (Second Example)</h4>
+          <div class="filled">
+            <ol>
+              <li>Students form long queues at only two billing counters during lunch hour.</li>
+              <li>Several people leave the line after waiting more than 10 minutes.</li>
+              <li>One counter accepts only cash; students with UPI search for another queue.</li>
+              <li>Food trays run out of spoons; students walk back to request more.</li>
+              <li>Seats near the window fill first; many stand and eat near the wall.</li>
+            </ol>
+          </div>
+          <div class="reflection" style="margin-top:10px;">
+            <p><strong>Surprised most by:</strong> How many students abandon the queue due to slow billing.</p>
+            <p><strong>Hidden need:</strong> Faster payment options and more counters at peak time.</p>
+            <p><strong>Next time:</strong> Observe both breakfast and lunch to compare crowd patterns.</p>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ========== ACTIVITY 1.2 ========== -->
+    <article class="activity">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 1.2</span>
+          <span class="ah-unit">Unit I</span>
+        </div>
+        <h2 class="ah-title">Conducting User Interviews</h2>
+        <div class="ah-meta">
+          <span>🎯 Objective: Practise open-ended interviewing</span>
+          <span>👤 Interviewee: College student commuter</span>
+        </div>
+      </div>
+      <div class="activity-body">
+
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Write 7 open-ended questions (no yes/no questions).</li>
+            <li>Find one real person (classmate, family, neighbour) who uses the service.</li>
+            <li>Ask for permission before starting the interview.</li>
+            <li>Interview for 15–30 minutes — listen more than you talk.</li>
+            <li>Write exact words the person said (verbatim quotes).</li>
+            <li>Note which pain point was repeated most often.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+          <h4>💬 Example A — Bus Commuter (Model Answer)</h4>
+          <p style="font-size:0.85rem;color:#64748b;margin-bottom:6px;"><strong>Interviewee:</strong> College student commuter</p>
+          <div class="filled">
+            <ol>
+              <li>What challenges do you face while waiting for buses?</li>
+              <li>How do you usually check bus timings?</li>
+              <li>What frustrates you most during commuting?</li>
+              <li>Can you recall a recent bad commuting experience?</li>
+              <li>What would make your bus travel easier?</li>
+              <li>How do you feel about current bus stop facilities?</li>
+              <li>If you could change one thing, what would it be?</li>
+            </ol>
+          </div>
+          <div class="quote">“The timings on the app are never correct.”</div>
+          <div class="quote">“I wish there were more seats at the stop.”</div>
+          <div class="quote">“Sometimes I miss buses because announcements are unclear.”</div>
+          <div class="reflection" style="margin-top:10px;">
+            <p><strong>Surprised by:</strong> Repeated complaints about inaccurate apps.</p>
+            <p><strong>Pain point repeated:</strong> Lack of seating and unreliable information.</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>💬 Example B — Cafeteria User (Second Example)</h4>
+          <p style="font-size:0.85rem;color:#64748b;margin-bottom:6px;"><strong>Interviewee:</strong> Final-year student who eats at the college canteen daily</p>
+          <div class="filled">
+            <ol>
+              <li>What is the hardest part of getting lunch in the cafeteria?</li>
+              <li>How do you usually decide what to order?</li>
+              <li>What frustrates you most while waiting in the queue?</li>
+              <li>Tell me about a recent bad experience in the canteen.</li>
+              <li>What would make your lunch break easier?</li>
+              <li>How do you feel about payment options available?</li>
+              <li>If you could change one thing in the cafeteria, what would it be?</li>
+            </ol>
+          </div>
+          <div class="quote">“By the time I reach the counter, half the items are over.”</div>
+          <div class="quote">“UPI works only on one counter — the queue is always longer there.”</div>
+          <div class="quote">“I often skip lunch because waiting wastes my free period.”</div>
+          <div class="reflection" style="margin-top:10px;">
+            <p><strong>Surprised by:</strong> How many students skip meals due to long waits.</p>
+            <p><strong>Pain point repeated:</strong> Slow billing and limited payment options at peak hour.</p>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ========== ACTIVITY 1.3 ========== -->
+    <article class="activity">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 1.3</span>
+          <span class="ah-unit">Unit I</span>
+        </div>
+        <h2 class="ah-title">Preparing an Empathy Map</h2>
+        <div class="ah-meta">
+          <span>👤 User: College student commuter</span>
+        </div>
+      </div>
+      <div class="activity-body">
+
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Take your interview notes and observation facts.</li>
+            <li>Draw 4 boxes on paper: SAYS · THINKS · DOES · FEELS.</li>
+            <li>Put exact quotes under SAYS.</li>
+            <li>Guess what the user was thinking under THINKS (from their words).</li>
+            <li>Write actions you saw under DOES.</li>
+            <li>Write emotions under FEELS.</li>
+            <li>Find the deepest need from the map.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+          <h4>🗺 Example A — Bus Commuter Empathy Map</h4>
+          <table class="map-table">
+            <tr>
+              <th>💬 SAYS</th>
+              <td>“Bus timings are wrong.” &nbsp; “No proper seating.”</td>
+            </tr>
+            <tr>
+              <th>🧠 THINKS</th>
+              <td>“I might miss class if the bus is late.”</td>
+            </tr>
+            <tr>
+              <th>🏃 DOES</th>
+              <td>Keeps checking phone, asks others for info.</td>
+            </tr>
+            <tr>
+              <th>❤️ FEELS</th>
+              <td>Frustrated, anxious, tired.</td>
+            </tr>
+          </table>
+          <div class="reflection" style="margin-top:10px;">
+            <p><strong>“Says” vs “Thinks”:</strong> Outward complaints differ from inner anxiety.</p>
+            <p><strong>Deepest need:</strong> Assurance of reliable bus arrival information.</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>🗺 Example B — Cafeteria User Empathy Map (Second Example)</h4>
+          <table class="map-table">
+            <tr>
+              <th>💬 SAYS</th>
+              <td>“The queue is too long.” &nbsp; “Items get over before I reach.”</td>
+            </tr>
+            <tr>
+              <th>🧠 THINKS</th>
+              <td>“If I wait more I will miss my next class.”</td>
+            </tr>
+            <tr>
+              <th>🏃 DOES</th>
+              <td>Checks menu board, switches counters, sometimes leaves without food.</td>
+            </tr>
+            <tr>
+              <th>❤️ FEELS</th>
+              <td>Impatient, hungry, stressed about time.</td>
+            </tr>
+          </table>
+          <div class="reflection" style="margin-top:10px;">
+            <p><strong>“Says” vs “Thinks”:</strong> Complains about queue length, but the real worry is missing class.</p>
+            <p><strong>Deepest need:</strong> Faster service so lunch fits inside the free period.</p>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ========== ACTIVITY 1.4 ========== -->
+    <article class="activity">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 1.4</span>
+          <span class="ah-unit">Unit I</span>
+        </div>
+        <h2 class="ah-title">Developing a Persona</h2>
+      </div>
+      <div class="activity-body">
+
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Choose one main user type from your research (student, elderly, parent, worker…).</li>
+            <li>Give them a realistic name, age, and job.</li>
+            <li>Write their main goal (what they want to achieve).</li>
+            <li>List their top 3 frustrations (from real quotes/observations).</li>
+            <li>Write one signature quote in their own words.</li>
+            <li>Do not invent details that contradict your research.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+          <h4>👤 Model Personas — 4 Categories (different ages)</h4>
+          <p style="font-size:0.85rem;color:#64748b;margin-bottom:8px;">
+            Main model uses the student. Three more age groups are given so students can compare and adapt.
+          </p>
+
+          <div class="persona-grid">
+            <!-- Persona 1 - Young student -->
+            <div class="persona-card">
+              <h5>🎓 Ravi Kumar, 20 yrs</h5>
+              <p><strong>Category:</strong> College student</p>
+              <p><strong>Role:</strong> Daily bus commuter</p>
+              <p><strong>Goal:</strong> Reach college on time without stress</p>
+              <p><strong>Top 3 Frustrations:</strong></p>
+              <ol style="padding-left:18px;margin:4px 0 8px;font-size:0.85rem;">
+                <li>Inaccurate bus timings</li>
+                <li>No seating at bus stop</li>
+                <li>Confusing announcements</li>
+              </ol>
+              <div class="quote" style="margin:0;font-size:0.82rem;">“If buses came on time, my mornings would be peaceful.”</div>
+            </div>
+
+            <!-- Persona 2 - Working adult -->
+            <div class="persona-card">
+              <h5>💼 Meena Sharma, 35 yrs</h5>
+              <p><strong>Category:</strong> Working professional</p>
+              <p><strong>Role:</strong> Office employee, morning &amp; evening commute</p>
+              <p><strong>Goal:</strong> Reach office on time and return home safely</p>
+              <p><strong>Top 3 Frustrations:</strong></p>
+              <ol style="padding-left:18px;margin:4px 0 8px;font-size:0.85rem;">
+                <li>Unpredictable delays affecting work</li>
+                <li>Overcrowded buses in peak hours</li>
+                <li>No clear real-time updates on phone</li>
+              </ol>
+              <div class="quote" style="margin:0;font-size:0.82rem;">“I leave early every day, yet still reach late because of buses.”</div>
+            </div>
+
+            <!-- Persona 3 - Elderly -->
+            <div class="persona-card">
+              <h5>👴 Subramaniam, 68 yrs</h5>
+              <p><strong>Category:</strong> Elderly citizen</p>
+              <p><strong>Role:</strong> Retired, uses bus for hospital &amp; market visits</p>
+              <p><strong>Goal:</strong> Travel safely and comfortably without long standing</p>
+              <p><strong>Top 3 Frustrations:</strong></p>
+              <ol style="padding-left:18px;margin:4px 0 8px;font-size:0.85rem;">
+                <li>No seats / long standing time</li>
+                <li>Cannot read small text on digital boards</li>
+                <li>Misses buses due to unclear announcements</li>
+              </ol>
+              <div class="quote" style="margin:0;font-size:0.82rem;">“Standing for 20 minutes is very difficult at my age.”</div>
+            </div>
+
+            <!-- Persona 4 - Parent with child -->
+            <div class="persona-card">
+              <h5>👩‍👧 Priya, 42 yrs</h5>
+              <p><strong>Category:</strong> Parent with school-going child</p>
+              <p><strong>Role:</strong> Mother escorting child to school by bus</p>
+              <p><strong>Goal:</strong> Safe, on-time drop of child at school</p>
+              <p><strong>Top 3 Frustrations:</strong></p>
+              <ol style="padding-left:18px;margin:4px 0 8px;font-size:0.85rem;">
+                <li>No safe waiting space for children</li>
+                <li>Bus often late — child reaches school late</li>
+                <li>Hard to manage child while checking timings</li>
+              </ol>
+              <div class="quote" style="margin:0;font-size:0.82rem;">“I need the bus to be on time so my child is not late to school.”</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>🧠 Reflection — Model Answer</h4>
+          <div class="reflection">
+            <p><strong>Most real:</strong> Frustrations matched actual interviews (especially student &amp; elderly).</p>
+            <p><strong>Design decision:</strong> Prioritize accurate bus tracking + seating + clearer announcements for all age groups.</p>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ========== ACTIVITY 1.5 ========== -->
+    <article class="activity">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 1.5</span>
+          <span class="ah-unit">Unit I</span>
+        </div>
+        <h2 class="ah-title">Preparing a User Journey Map</h2>
+        <div class="ah-meta">
+          <span>👤 Persona used: Ravi Kumar (main model)</span>
+        </div>
+      </div>
+      <div class="activity-body">
+
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Take one persona you created in Activity 1.4.</li>
+            <li>List 5–6 stages of their day (from start to end of the experience).</li>
+            <li>For each stage write: what they DO and how they FEEL.</li>
+            <li>Mark the worst stage (biggest pain point) clearly.</li>
+            <li>Write one opportunity statement (how design can help).</li>
+            <li>Draw the stages in order (sequence diagram) left to right.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+          <h4>🗺 Journey Map — Stage Sequence Diagram</h4>
+          <p style="font-size:0.85rem;color:#64748b;margin-bottom:4px;">
+            Follow the path left → right. Emotion colour shows how Ravi feels at each stage.
+          </p>
+          <div class="flow-wrap">
+            <div class="flow-row">
+              <div class="flow-step emo-neutral">
+                <div class="fs-num">1</div>
+                <div class="fs-title">Leaves home</div>
+                <div class="fs-sub">Walks to bus stop<br>😐 Neutral</div>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step emo-anxious">
+                <div class="fs-num">2</div>
+                <div class="fs-title">Waits at stop</div>
+                <div class="fs-sub">Checks app, asks others<br>😟 Anxious</div>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step emo-frustrated">
+                <div class="fs-num">3</div>
+                <div class="fs-title">Bus arrives late</div>
+                <div class="fs-sub">Rushes to board<br>😠 Frustrated</div>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step emo-tired">
+                <div class="fs-num">4</div>
+                <div class="fs-title">On bus</div>
+                <div class="fs-sub">Stands in crowd<br>😩 Tired</div>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step emo-embarrassed">
+                <div class="fs-num">5</div>
+                <div class="fs-title">Reaches college</div>
+                <div class="fs-sub">Late to class<br>😳 Embarrassed</div>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step emo-resigned">
+                <div class="fs-num">6</div>
+                <div class="fs-title">Returns home</div>
+                <div class="fs-sub">Same issues again<br>😑 Resigned</div>
+              </div>
+            </div>
+          </div>
+          <div class="flow-legend">
+            <span><i style="background:#64748b"></i> Neutral</span>
+            <span><i style="background:#d97706"></i> Anxious</span>
+            <span><i style="background:#dc2626"></i> Frustrated</span>
+            <span><i style="background:#7c3aed"></i> Tired</span>
+            <span><i style="background:#db2777"></i> Embarrassed</span>
+            <span><i style="background:#4b5563"></i> Resigned</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>📋 Journey Map (Table View)</h4>
+          <table class="map-table">
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Does</th>
+                <th>Feels</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Leaves home</strong></td>
+                <td>Walks to bus stop</td>
+                <td>Neutral</td>
+              </tr>
+              <tr>
+                <td><strong>2. Waits at stop</strong></td>
+                <td>Checks app, asks others</td>
+                <td>Anxious</td>
+              </tr>
+              <tr>
+                <td><strong>3. Bus arrives late</strong></td>
+                <td>Rushes to board</td>
+                <td>Frustrated</td>
+              </tr>
+              <tr>
+                <td><strong>4. On bus</strong></td>
+                <td>Stands due to crowd</td>
+                <td>Tired</td>
+              </tr>
+              <tr>
+                <td><strong>5. Reaches college</strong></td>
+                <td>Late to class</td>
+                <td>Embarrassed</td>
+              </tr>
+              <tr>
+                <td><strong>6. Returns home</strong></td>
+                <td>Faces same issues</td>
+                <td>Resigned</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h4>🚩 Biggest Pain Point</h4>
+          <div class="pain">Waiting at bus stop with unreliable information.</div>
+        </div>
+
+        <div class="section">
+          <h4>💡 Opportunity Statement</h4>
+          <div class="opportunity">Provide real-time bus tracking + better stop facilities.</div>
+        </div>
+
+        <div class="section">
+          <h4>🧠 Reflection</h4>
+          <div class="reflection">
+            <p><strong>Worst stage:</strong> Waiting at the stop.</p>
+            <p><strong>Biggest innovation opportunity:</strong> Smart bus stop with live updates.</p>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- ========== REFERENCE: Example Places ========== -->
+    <article class="activity">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">📚 Reference</span>
+          <span class="ah-unit">Unit I</span>
+        </div>
+        <h2 class="ah-title">Example Places for Observation & Interviews</h2>
+      </div>
+      <div class="activity-body">
+        <div class="ref-grid">
+          <div class="ref-card"><strong>1. Cafeteria / Canteen</strong><br>Queueing, food choice, seating issues.</div>
+          <div class="ref-card"><strong>2. Library</strong><br>Book search, catalog systems, silence rules.</div>
+          <div class="ref-card"><strong>3. Hospital waiting area</strong><br>Patient anxiety, long waits, communication gaps.</div>
+          <div class="ref-card"><strong>4. ATM / Bank counter</strong><br>Queues, machines, paperwork.</div>
+          <div class="ref-card"><strong>5. Supermarket checkout</strong><br>Baskets, payment, bagging.</div>
+          <div class="ref-card"><strong>6. Public park</strong><br>Facilities, litter, seating.</div>
+          <div class="ref-card"><strong>7. Railway / Metro stop</strong><br>Ticketing, crowd flow, info boards.</div>
+          <div class="ref-card"><strong>8. Classroom / Lab</strong><br>Technology, assignments, group work.</div>
+          <div class="ref-card"><strong>9. Government office (RTO)</strong><br>Paperwork, waiting, confusion.</div>
+          <div class="ref-card"><strong>10. Mall escalators / lifts</strong><br>Crowd movement, accessibility, safety.</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== REFERENCE: Themes ========== -->
+    <article class="activity">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">📚 Reference</span>
+          <span class="ah-unit">Unit I</span>
+        </div>
+        <h2 class="ah-title">Example Themes for Empathy Maps & Personas</h2>
+      </div>
+      <div class="activity-body">
+        <div class="filled">
+          <ol>
+            <li>Student struggling with online classes</li>
+            <li>Parent managing small children in public spaces</li>
+            <li>Elderly person using digital payment apps</li>
+            <li>Tourist navigating a new city’s transport system</li>
+            <li>Patient waiting for medical test results</li>
+            <li>Customer trying to return a product in a store</li>
+            <li>Job seeker filling out online applications</li>
+          </ol>
+        </div>
+        <div class="section" style="margin-top:18px;">
+          <h4>Why these work</h4>
+          <ul>
+            <li><strong>Natural behaviour</strong> — people aren’t acting for the observer.</li>
+            <li><strong>Visible frustrations</strong> — queues, confusion, waiting, discomfort.</li>
+            <li><strong>Hidden needs</strong> — better information, comfort, accessibility.</li>
+            <li><strong>Opportunities for innovation</strong> — apps, services, design changes.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <footer>
+    <div class="sig">@Oyyathevan</div>
+    <div>Model Filled Lab Sheet · Unit I · Design Thinking & Innovation · 2026</div>
+  </footer>
+
+  <script>
+    // Welcome name
+    document.getElementById('welcomeUser').textContent =
+      'Welcome: ' + (sessionStorage.getItem('lithuUsername') || 'User');
+
+    // Logout
+    document.getElementById('logoutBtn').onclick = function () {
+      sessionStorage.removeItem('lithuLoggedIn');
+      sessionStorage.removeItem('lithuUsername');
+      window.location.href = '../index.html';
+    };
+  </script>
+</body>
+</html>
