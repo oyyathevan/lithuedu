@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Regression Explainer</title>
+<style>
+  :root {
+    --bg: #f8f6f1;
+    --card: #ffffff;
+    --border: #e5e0d8;
+    --text: #2c2c2c;
+    --muted: #6b6b6b;
+    --accent: #1a5f7a;
+    --line: #1a5f7a;
+    --residual: #c45c26;
+    --btn: #e8e4dc;
+    --btn-hover: #ddd8ce;
+    --primary: #c45c26;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px 1fr 260px;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 980px) {
+    .container { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #1a3a4a;
+  }
+  .desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .section-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 14px 0 8px;
+  }
+  .dataset-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .dataset-btns button {
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+  }
+  .dataset-btns button.active {
+    background: #e8f0f5;
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .dataset-btns button:hover:not(.active) {
+    background: #f5f5f5;
+  }
+  .slider-row {
+    margin-bottom: 14px;
+  }
+  .slider-row label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  .slider-row input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+    height: 6px;
+  }
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin: 16px 0 12px;
+  }
+  .btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--btn);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: var(--btn-hover); }
+  .btn.primary {
+    background: #f5e6dc;
+    border-color: #e0b8a0;
+    color: #8b3a1a;
+  }
+  .btn.primary:hover { background: #f0d9c8; }
+  .checks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.88rem;
+    margin-bottom: 14px;
+  }
+  .checks label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .meta {
+    font-size: 0.82rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 8px;
+  }
+  .meta strong { color: var(--text); }
+  /* Graph area */
+  .graph-card { padding: 16px 18px 12px; }
+  .graph-card h2 { margin-bottom: 12px; }
+  #canvas {
+    width: 100%;
+    height: 380px;
+    display: block;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #eee;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+    font-size: 0.8rem;
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #f3f1ec;
+    border-radius: 20px;
+  }
+  .legend .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .legend .line {
+    width: 18px; height: 3px; border-radius: 2px;
+  }
+  /* Right panel */
+  .current-fn {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 6px 0 8px;
+  }
+  .current-loss {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a3a4a;
+    margin: 4px 0 8px;
+  }
+  .panel-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .tags span {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    background: #eef3f6;
+    border-radius: 16px;
+    color: #3a5a6a;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- LEFT: Controls -->
+  <div class="card">
+    <h2>Controls</h2>
+    <p class="desc">This explainer starts with a linear model family. Change the slope and intercept to propose a candidate function, then compare its predictions with the observed examples.</p>
+
+    <div class="section-label">Choose A Dataset</div>
+    <div class="dataset-btns">
+      <button id="ds-almost" class="active">Almost Linear</button>
+      <button id="ds-noisy">Noisy Data</button>
+      <button id="ds-curved">Clearly Curved</button>
+    </div>
+
+    <div class="slider-row">
+      <label>
+        <span>w (Slope)</span>
+        <span id="w-val">1.9</span>
+      </label>
+      <input type="range" id="w" min="-2" max="4" step="0.05" value="1.9">
+    </div>
+
+    <div class="slider-row">
+      <label>
+        <span>b (Intercept)</span>
+        <span id="b-val">-0.25</span>
+      </label>
+      <input type="range" id="b" min="-5" max="5" step="0.05" value="-0.25">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="reset">Reset Parameters</button>
+      <button class="btn primary" id="best">Find A Better Fit</button>
+    </div>
+
+    <div class="checks">
+      <label><input type="checkbox" id="show-res" checked> Show Residuals</label>
+      <label><input type="checkbox" id="show-sq"> Show Squared Error Boxes</label>
+    </div>
+
+    <div class="meta">
+      <div>Model family: <strong>Linear regression</strong></div>
+      <div>Candidate function: <strong id="cand-fn">ŷ = 1.9x − 0.25</strong></div>
+    </div>
+  </div>
+
+  <!-- CENTER: Graph -->
+  <div class="card graph-card">
+    <h2>Training Data And Candidate Function</h2>
+    <canvas id="canvas"></canvas>
+    <div class="legend">
+      <span><i class="dot" style="background:#1a5f7a"></i> Observed Data Points</span>
+      <span><i class="line" style="background:#1a5f7a"></i> Candidate Line</span>
+      <span><i class="line" style="background:#c45c26"></i> Residuals = Vertical Errors</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: Info -->
+  <div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Current Function</h2>
+      <div class="current-fn" id="fn-display">ŷ = 1.9x − 0.25</div>
+      <p class="panel-desc">This is the particular straight-line function selected by the current values of w and b.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <h2>Current Loss</h2>
+      <div class="current-loss" id="loss-display">11.59</div>
+      <p class="panel-desc">This is the mean squared error across all training examples. Smaller values mean the candidate function fits the observed examples better.</p>
+    </div>
+
+    <div class="card">
+      <h2>What The Page Is Showing</h2>
+      <div class="tags">
+        <span>Training Examples</span>
+        <span>Candidate Function</span>
+        <span>Residuals</span>
+        <span>Loss</span>
+        <span>Parameter Adjustment</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---------- Datasets ----------
+const datasets = {
+  almost: [
+    {x:1, y:2.1}, {x:2, y:3.0}, {x:3, y:4.2}, {x:4, y:5.1},
+    {x:5, y:6.3}, {x:6, y:7.2}, {x:7, y:7.9}, {x:8, y:9.4}
+  ],
+  noisy: [
+    {x:1, y:1.8}, {x:2, y:4.1}, {x:3, y:3.5}, {x:4, y:6.8},
+    {x:5, y:5.9}, {x:6, y:9.2}, {x:7, y:7.1}, {x:8, y:11.0}
+  ],
+  curved: [
+    {x:1, y:1.5}, {x:2, y:2.2}, {x:3, y:3.8}, {x:4, y:5.9},
+    {x:5, y:8.5}, {x:6, y:11.8}, {x:7, y:15.6}, {x:8, y:20.2}
+  ]
+};
+
+let currentDS = 'almost';
+let points = datasets.almost;
+let w = 1.9;
+let b = -0.25;
+
+// ---------- DOM ----------
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const wSlider = document.getElementById('w');
+const bSlider = document.getElementById('b');
+const wVal = document.getElementById('w-val');
+const bVal = document.getElementById('b-val');
+const fnDisplay = document.getElementById('fn-display');
+const lossDisplay = document.getElementById('loss-display');
+const candFn = document.getElementById('cand-fn');
+const showRes = document.getElementById('show-res');
+const showSq = document.getElementById('show-sq');
+
+// ---------- Helpers ----------
+function formatNum(n) {
+  return (Math.round(n * 100) / 100).toString();
+}
+function formatFn(w, b) {
+  const sign = b >= 0 ? ' + ' : ' − ';
+  return `ŷ = ${formatNum(w)}x${sign}${formatNum(Math.abs(b))}`;
+}
+function mse(points, w, b) {
+  let sum = 0;
+  for (const p of points) {
+    const pred = w * p.x + b;
+    const err = p.y - pred;
+    sum += err * err;
+  }
+  return sum / points.length;
+}
+
+// ---------- Canvas sizing ----------
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  draw();
+}
+window.addEventListener('resize', resizeCanvas);
+
+// ---------- Drawing ----------
+function draw() {
+  const W = canvas.clientWidth;
+  const H = canvas.clientHeight;
+  ctx.clearRect(0, 0, W, H);
+
+  // Plot area margins
+  const m = { left: 50, right: 30, top: 25, bottom: 45 };
+  const plotW = W - m.left - m.right;
+  const plotH = H - m.top - m.bottom;
+
+  // Data ranges (fixed for consistency with screenshot)
+  const xMin = 0.5, xMax = 8.5;
+  const yMin = 0, yMax = 16.5;
+
+  function toX(x) { return m.left + ((x - xMin) / (xMax - xMin)) * plotW; }
+  function toY(y) { return m.top + plotH - ((y - yMin) / (yMax - yMin)) * plotH; }
+
+  // Grid
+  ctx.strokeStyle = '#e8e8e8';
+  ctx.lineWidth = 1;
+  for (let x = 1; x <= 8; x++) {
+    ctx.beginPath();
+    ctx.moveTo(toX(x), m.top);
+    ctx.lineTo(toX(x), m.top + plotH);
+    ctx.stroke();
+  }
+  for (let y = 2; y <= 16; y += 2) {
+    ctx.beginPath();
+    ctx.moveTo(m.left, toY(y));
+    ctx.lineTo(m.left + plotW, toY(y));
+    ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = '#aaa';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(m.left, m.top);
+  ctx.lineTo(m.left, m.top + plotH);
+  ctx.lineTo(m.left + plotW, m.top + plotH);
+  ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle = '#555';
+  ctx.font = '12px system-ui';
+  ctx.textAlign = 'center';
+  for (let x = 1; x <= 8; x++) {
+    ctx.fillText(String(x), toX(x), m.top + plotH + 18);
+  }
+  ctx.textAlign = 'right';
+  for (let y = 0; y <= 16; y += 2) {
+    ctx.fillText(String(y), m.left - 8, toY(y) + 4);
+  }
+  ctx.textAlign = 'center';
+  ctx.fillText('Input x', m.left + plotW / 2, H - 6);
+  ctx.save();
+  ctx.translate(14, m.top + plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Output y', 0, 0);
+  ctx.restore();
+
+  // Candidate line
+  ctx.strokeStyle = '#1a5f7a';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  const y1 = w * xMin + b;
+  const y2 = w * xMax + b;
+  ctx.moveTo(toX(xMin), toY(y1));
+  ctx.lineTo(toX(xMax), toY(y2));
+  ctx.stroke();
+
+  // Equation label near the line
+  ctx.fillStyle = '#1a5f7a';
+  ctx.font = '13px system-ui';
+  ctx.textAlign = 'left';
+  const labelX = toX(7.2);
+  const labelY = toY(w * 7.2 + b) - 12;
+  ctx.fillText(formatFn(w, b), labelX, labelY);
+
+  // Residuals + points
+  const showResiduals = showRes.checked;
+  const showBoxes = showSq.checked;
+
+  points.forEach((p, i) => {
+    const pred = w * p.x + b;
+    const px = toX(p.x);
+    const py = toY(p.y);
+    const predY = toY(pred);
+
+    // Squared error boxes
+    if (showBoxes) {
+      const err = p.y - pred;
+      const side = Math.abs(err);
+      // Convert side length in data units to pixels (approximate using y-scale)
+      const sidePx = Math.abs(toY(0) - toY(side));
+      ctx.fillStyle = 'rgba(196, 92, 38, 0.15)';
+      ctx.strokeStyle = 'rgba(196, 92, 38, 0.5)';
+      ctx.lineWidth = 1;
+      // Box to the right of the residual
+      const boxX = px;
+      const boxY = Math.min(py, predY);
+      ctx.fillRect(boxX, boxY, sidePx, Math.abs(py - predY));
+      ctx.strokeRect(boxX, boxY, sidePx, Math.abs(py - predY));
+    }
+
+    // Residual line
+    if (showResiduals) {
+      ctx.strokeStyle = '#c45c26';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(px, predY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Data point
+    ctx.beginPath();
+    ctx.arc(px, py, 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#1a5f7a';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Index number
+    ctx.fillStyle = '#1a5f7a';
+    ctx.font = '11px system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText(String(i + 1), px + 9, py + 4);
+  });
+}
+
+// ---------- Update everything ----------
+function update() {
+  w = parseFloat(wSlider.value);
+  b = parseFloat(bSlider.value);
+  wVal.textContent = formatNum(w);
+  bVal.textContent = formatNum(b);
+
+  const fnStr = formatFn(w, b);
+  fnDisplay.textContent = fnStr;
+  candFn.textContent = fnStr;
+
+  const loss = mse(points, w, b);
+  lossDisplay.textContent = loss.toFixed(2);
+
+  draw();
+}
+
+// ---------- Event listeners ----------
+wSlider.addEventListener('input', update);
+bSlider.addEventListener('input', update);
+showRes.addEventListener('change', draw);
+showSq.addEventListener('change', draw);
+
+document.getElementById('ds-almost').addEventListener('click', () => setDataset('almost'));
+document.getElementById('ds-noisy').addEventListener('click', () => setDataset('noisy'));
+document.getElementById('ds-curved').addEventListener('click', () => setDataset('curved'));
+
+function setDataset(name) {
+  currentDS = name;
+  points = datasets[name];
+  document.querySelectorAll('.dataset-btns button').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('ds-' + name).classList.add('active');
+  // Reset to reasonable starting values
+  if (name === 'almost') { wSlider.value = 1.9; bSlider.value = -0.25; }
+  else if (name === 'noisy') { wSlider.value = 1.2; bSlider.value = 0.5; }
+  else { wSlider.value = 2.5; bSlider.value = -1.5; }
+  update();
+}
+
+document.getElementById('reset').addEventListener('click', () => {
+  if (currentDS === 'almost') { wSlider.value = 1.9; bSlider.value = -0.25; }
+  else if (currentDS === 'noisy') { wSlider.value = 1.2; bSlider.value = 0.5; }
+  else { wSlider.value = 2.5; bSlider.value = -1.5; }
+  update();
+});
+
+document.getElementById('best').addEventListener('click', () => {
+  // Closed-form least-squares solution for y = wx + b
+  const n = points.length;
+  let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+  for (const p of points) {
+    sumX += p.x;
+    sumY += p.y;
+    sumXY += p.x * p.y;
+    sumX2 += p.x * p.x;
+  }
+  const denom = n * sumX2 - sumX * sumX;
+  const bestW = (n * sumXY - sumX * sumY) / denom;
+  const bestB = (sumY - bestW * sumX) / n;
+
+  // Animate toward best values
+  const startW = w, startB = b;
+  const steps = 25;
+  let step = 0;
+  const timer = setInterval(() => {
+    step++;
+    const t = step / steps;
+    wSlider.value = startW + (bestW - startW) * t;
+    bSlider.value = startB + (bestB - startB) * t;
+    update();
+    if (step >= steps) clearInterval(timer);
+  }, 25);
+});
+
+// Init
+resizeCanvas();
+update();
+</script>
+</body>
+</html>
