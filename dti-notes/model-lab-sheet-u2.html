@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Filled Lab Sheet – Unit II | DTI Notes</title>
+
+  <script src="../auth-check.js"></script>
+  <script>
+    if (sessionStorage.getItem('lithuLoggedIn') !== 'true') {
+      window.location.replace('../index.html');
+    }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #0d47a1;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --green: #10b981;
+      --border: #e2e8f0;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+    html { scroll-behavior: smooth; }
+
+    header {
+      background: linear-gradient(90deg, #0d47a1, #1a73e8);
+      color: white;
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo span {
+      background: rgba(255,255,255,0.2);
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .welcome-user {
+      font-size: 0.88rem;
+      background: rgba(255,255,255,0.15);
+      padding: 7px 14px;
+      border-radius: 20px;
+    }
+    .btn {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: 0.2s;
+    }
+    .btn-home {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+    .btn-home:hover { background: rgba(255,255,255,0.3); }
+    .btn-practical {
+      background: #f59e0b;
+      color: white;
+    }
+    .btn-practical:hover { background: #d97706; }
+    .btn-logout { background: var(--green); color: white; }
+    .btn-logout:hover { background: #059669; }
+
+    .wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 50px; }
+
+    .hero {
+      background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+      color: #fff;
+      padding: 28px 30px;
+      border-radius: 16px;
+      margin-bottom: 22px;
+      box-shadow: 0 10px 26px rgba(37,99,235,.22);
+    }
+    .hero .tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+    .hero h1 { font-size: 1.55rem; margin: 0 0 8px; font-weight: 800; }
+    .hero p { opacity: 0.92; font-size: 0.92rem; max-width: 680px; margin: 0; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; align-items: center; }
+    .badge {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .note-box {
+      background: #FEF3C7;
+      border-left: 5px solid #F59E0B;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+      color: #92400E;
+    }
+
+    .summary-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .summary-box h3 { color: var(--primary-dark); margin-bottom: 8px; font-size: 1.05rem; }
+
+    .vflow { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 16px 0 8px; }
+    .vflow-step {
+      background: white;
+      border: 2px solid #2563EB;
+      border-radius: 12px;
+      padding: 14px 20px;
+      width: 100%;
+      max-width: 540px;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.1);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .vflow-step:hover {
+      background: #eff6ff;
+      border-color: #1d4ed8;
+      transform: translateY(-2px);
+    }
+    .vflow-step .vs-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .vflow-step .vs-num {
+      background: #2563EB;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+    .vflow-step .vs-title { font-weight: 700; color: #0d47a1; font-size: 0.95rem; }
+    .vflow-step .vs-out { font-size: 0.82rem; color: #475569; }
+    .vflow-step .vs-out strong { color: #059669; }
+    .vflow-step .vs-click { font-size: 0.72rem; color: #2563EB; margin-top: 6px; font-weight: 600; }
+    .vflow-arrow { color: #2563EB; font-size: 1.5rem; padding: 4px 0; }
+
+    .activity {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 6px 22px rgba(0,0,0,0.07);
+      border: 1px solid var(--border);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .activity:target { outline: 3px solid #2563EB; outline-offset: 4px; }
+    .activity-head {
+      background: linear-gradient(90deg, #eff6ff, #f8fafc);
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ah-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .ah-num {
+      background: #2563EB;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .ah-unit { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+    .ah-title { font-size: 1.2rem; color: var(--primary-dark); margin: 4px 0 6px; }
+    .ah-meta { display: flex; gap: 14px; font-size: 0.82rem; color: var(--muted); flex-wrap: wrap; }
+    .activity-body { padding: 22px; }
+
+    .section { margin-bottom: 20px; }
+    .section h4 {
+      font-size: 0.95rem;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .student-flow {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-left: 5px solid #f97316;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 0.88rem;
+    }
+    .student-flow h4 { color: #c2410c; margin-bottom: 8px; font-size: 0.92rem; }
+    .student-flow ol { padding-left: 18px; color: #9a3412; margin: 0; }
+    .student-flow li { margin-bottom: 4px; }
+
+    .filled {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 8px;
+    }
+    .filled li { margin-bottom: 6px; }
+
+    .quote {
+      background: #f8fafc;
+      border-left: 4px solid #2563EB;
+      padding: 10px 14px;
+      margin: 8px 0;
+      font-style: italic;
+      color: #1e40af;
+      font-size: 0.9rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    table.map-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 0.88rem;
+    }
+    table.map-table th, table.map-table td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.map-table th {
+      background: #eff6ff;
+      color: var(--primary-dark);
+      font-weight: 700;
+      width: 140px;
+    }
+    table.map-table tr:nth-child(even) td { background: #f8fafc; }
+
+    .pain {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    .opportunity {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    .reflection {
+      background: #faf5ff;
+      border: 1px solid #e9d5ff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 8px;
+    }
+    .reflection p { margin-bottom: 8px; font-size: 0.9rem; color: #5b21b6; }
+
+
+    /* ===== DIAGRAMS ===== */
+    .diagram-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0 18px;
+      overflow-x: auto;
+    }
+    .diagram-box h5 {
+      font-size: 0.85rem;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .cluster-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .cluster-card {
+      background: white;
+      border: 2px solid #2563EB;
+      border-radius: 10px;
+      padding: 10px 12px;
+      min-width: 140px;
+      max-width: 180px;
+      text-align: center;
+      font-size: 0.78rem;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.1);
+    }
+    .cluster-card .cc-title {
+      font-weight: 700;
+      color: #0d47a1;
+      margin-bottom: 4px;
+      font-size: 0.82rem;
+    }
+    .cluster-card .cc-insight {
+      color: #059669;
+      font-size: 0.72rem;
+      line-height: 1.3;
+    }
+    .cluster-src {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .cluster-src span {
+      background: #e0e7ff;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      color: #3730a3;
+    }
+    .arrow-down-center {
+      text-align: center;
+      color: #2563EB;
+      font-size: 1.3rem;
+      margin: 6px 0;
+    }
+    .stmt-flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .stmt-node {
+      background: white;
+      border: 2px solid #0ea5e9;
+      border-radius: 10px;
+      padding: 10px 14px;
+      max-width: 480px;
+      width: 100%;
+      font-size: 0.82rem;
+      color: #0c4a6e;
+      text-align: center;
+    }
+    .stmt-node strong { color: #0369a1; }
+    .pov-hmw {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .pov-box {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      border-radius: 12px;
+      padding: 14px 18px;
+      max-width: 500px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .hmw-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      max-width: 560px;
+    }
+    .hmw-chip {
+      background: white;
+      border: 1.5px solid #2563EB;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      color: #1e40af;
+    }
+    .stake-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .stake-cell {
+      background: white;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 0.78rem;
+      border: 2px solid #94a3b8;
+    }
+    .stake-cell.hi-hi { border-color: #dc2626; background: #fef2f2; }
+    .stake-cell.hi-lo { border-color: #f59e0b; background: #fffbeb; }
+    .stake-cell.lo-hi { border-color: #2563eb; background: #eff6ff; }
+    .stake-cell.lo-lo { border-color: #94a3b8; background: #f8fafc; }
+    .stake-cell .sc-label {
+      font-weight: 800;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .stake-cell.hi-hi .sc-label { color: #dc2626; }
+    .stake-cell.hi-lo .sc-label { color: #d97706; }
+    .stake-cell.lo-hi .sc-label { color: #2563eb; }
+    .stake-cell.lo-lo .sc-label { color: #64748b; }
+    .why-chain {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .why-node {
+      background: white;
+      border: 2px solid #7c3aed;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      font-size: 0.8rem;
+      text-align: center;
+      color: #4c1d95;
+    }
+    .why-node.root {
+      border-color: #dc2626;
+      background: #fef2f2;
+      color: #991b1b;
+      font-weight: 700;
+    }
+    .why-node.problem {
+      border-color: #2563EB;
+      background: #eff6ff;
+      color: #1e40af;
+      font-weight: 600;
+    }
+    .why-arrow { color: #7c3aed; font-size: 1.1rem; padding: 2px 0; }
+    .select-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .select-card {
+      background: white;
+      border: 2px solid #94a3b8;
+      border-radius: 10px;
+      padding: 10px 12px;
+      min-width: 110px;
+      text-align: center;
+      font-size: 0.75rem;
+    }
+    .select-card.winner {
+      border-color: #059669;
+      background: #ecfdf5;
+      box-shadow: 0 0 0 3px rgba(5,150,105,0.2);
+    }
+    .select-card .sc-score {
+      font-weight: 800;
+      color: #0d47a1;
+      margin-top: 4px;
+    }
+    .select-card.winner .sc-score { color: #059669; }
+    .final-box {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: white;
+      border-radius: 12px;
+      padding: 14px 18px;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 600;
+      max-width: 520px;
+      margin: 10px auto 0;
+    }
+    @media (max-width: 560px) {
+      .stake-grid { grid-template-columns: 1fr; }
+    }
+
+    .stmt {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 8px 0;
+      font-size: 0.9rem;
+      color: #0c4a6e;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+    footer .sig {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: #64748b;
+    }
+
+    @media (max-width: 640px) {
+      header { padding: 12px 14px; }
+      .logo span { display: none; }
+    }
+    @media print {
+      header, .btn-logout, .btn-home, .btn-practical { display: none !important; }
+      .activity { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="../index.html" class="logo">
+      🌐 LITHU EDU HYB
+      <span>Education Hub</span>
+    </a>
+    <div class="header-right">
+      <span class="welcome-user" id="welcomeUser">Welcome: User</span>
+      <a href="../index.html" class="btn btn-home">← Back to Home</a>
+      <button class="btn btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="tag">Unit II · Model Answer Sheet</div>
+      <h1>📋 Model Filled Lab Sheet – Problem Definition &amp; Opportunity</h1>
+      <p>Fully worked example answers for Activities 2.1–2.6. Continues the same bus-stop / Ravi Kumar problem from Unit I.</p>
+      <div class="badge-row">
+        <span class="badge">🧪 6 Activities</span>
+        <span class="badge">📘 Unit II</span>
+        <span class="badge">✅ Model Answers</span>
+        <a href="practical.html" class="btn btn-practical">← Back to Practical Session</a>
+      </div>
+    </section>
+
+    <div class="note-box">
+      <strong>How to use:</strong> This is the <em>model / answer</em> sheet for Unit II.
+      It continues the <strong>same problem</strong> from Unit I (college student bus commute / Ravi Kumar).
+      Your blank worksheet is the Unit II practical PDF. Adapt context if needed, but keep the structure.
+    </div>
+
+    <!-- Overall flow -->
+    <div class="summary-box">
+      <h3>📌 Overall Unit II Flow — How the 6 Experiments Connect</h3>
+      <p style="font-size:0.88rem;color:#475569;margin-bottom:8px;">
+        Builds on Unit I research. <strong>Click any step</strong> to jump to that activity.
+      </p>
+      <div class="vflow">
+        <a href="#activity-2-1" class="vflow-step">
+          <div class="vs-top"><span class="vs-num">2.1</span><span class="vs-title">Affinity Mapping of Interview Data</span></div>
+          <div class="vs-out">From U1 notes → Output → <strong>4 theme clusters + insights</strong></div>
+          <div class="vs-click">Click to open Activity 2.1 ↓</div>
+        </a>
+        <div class="vflow-arrow">↓</div>
+        <a href="#activity-2-2" class="vflow-step">
+          <div class="vs-top"><span class="vs-num">2.2</span><span class="vs-title">Three Alternative Problem Statements</span></div>
+          <div class="vs-out">From themes → Output → <strong>3 differently framed statements</strong></div>
+          <div class="vs-click">Click to open Activity 2.2 ↓</div>
+        </a>
+        <div class="vflow-arrow">↓</div>
+        <a href="#activity-2-3" class="vflow-step">
+          <div class="vs-top"><span class="vs-num">2.3</span><span class="vs-title">POV and HMW Statements</span></div>
+          <div class="vs-out">From problem statement → Output → <strong>POV + 5 HMW questions</strong></div>
+          <div class="vs-click">Click to open Activity 2.3 ↓</div>
+        </a>
+        <div class="vflow-arrow">↓</div>
+        <a href="#activity-2-4" class="vflow-step">
+          <div class="vs-top"><span class="vs-num">2.4</span><span class="vs-title">Stakeholder Map</span></div>
+          <div class="vs-out">Around the problem → Output → <strong>4 influence/interest groups</strong></div>
+          <div class="vs-click">Click to open Activity 2.4 ↓</div>
+        </a>
+        <div class="vflow-arrow">↓</div>
+        <a href="#activity-2-5" class="vflow-step">
+          <div class="vs-top"><span class="vs-num">2.5</span><span class="vs-title">Root-Cause Analysis (5 Whys)</span></div>
+          <div class="vs-out">From problem → Output → <strong>root cause + countermeasure</strong></div>
+          <div class="vs-click">Click to open Activity 2.5 ↓</div>
+        </a>
+        <div class="vflow-arrow">↓</div>
+        <a href="#activity-2-6" class="vflow-step">
+          <div class="vs-top"><span class="vs-num">2.6</span><span class="vs-title">Select &amp; Validate One Problem</span></div>
+          <div class="vs-out">Score + validate → Output → <strong>one final selected problem</strong></div>
+          <div class="vs-click">Click to open Activity 2.6 ↓</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ========== 2.1 ========== -->
+    <article class="activity" id="activity-2-1">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 2.1</span>
+          <span class="ah-unit">Unit II</span>
+        </div>
+        <h2 class="ah-title">Affinity Mapping of Interview Data</h2>
+        <div class="ah-meta">
+          <span>⏱ 45 min</span>
+          <span>👥 Group</span>
+          <span>📘 § 2.1</span>
+          <span>Topic: College student bus commute</span>
+        </div>
+      </div>
+      <div class="activity-body">
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Bring interview notes and observations from Unit I.</li>
+            <li>Write each fact / quote on a separate sticky note.</li>
+            <li>Group similar notes into clusters on a wall or board.</li>
+            <li>Name each cluster with a clear theme (not vague labels).</li>
+            <li>Write one insight (the “why”) under every theme.</li>
+            <li>Answer the reflection questions as a group.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+
+        <div class="diagram-box">
+          <h5>📐 Diagram — Affinity Mapping Flow</h5>
+          <div class="cluster-src"><span>U1 Interview notes + Observations</span></div>
+          <div class="arrow-down-center">↓ group into themes</div>
+          <div class="cluster-row">
+            <div class="cluster-card">
+              <div class="cc-title">1. Unreliable timing</div>
+              <div class="cc-insight">Missed classes</div>
+            </div>
+            <div class="cluster-card">
+              <div class="cc-title">2. No seating</div>
+              <div class="cc-insight">Fatigue &amp; discomfort</div>
+            </div>
+            <div class="cluster-card">
+              <div class="cc-title">3. Unclear announcements</div>
+              <div class="cc-insight">Miss correct bus</div>
+            </div>
+            <div class="cluster-card">
+              <div class="cc-title">4. Broken queues</div>
+              <div class="cc-insight">Chaos &amp; stress</div>
+            </div>
+          </div>
+          <div class="arrow-down-center">↓ each theme needs an insight (why)</div>
+        </div>
+
+          <h4>🧩 Theme Clusters — Model Answer (Bus commute)</h4>
+          <table class="map-table">
+            <tr>
+              <th>1. Theme</th>
+              <td><strong>Unreliable timing information</strong><br>
+              <em>Insight (why):</em> Students miss classes because apps and boards do not match real bus arrivals.</td>
+            </tr>
+            <tr>
+              <th>2. Theme</th>
+              <td><strong>Lack of seating at stops</strong><br>
+              <em>Insight (why):</em> Long standing causes fatigue and discomfort, especially for elderly and tired students.</td>
+            </tr>
+            <tr>
+              <th>3. Theme</th>
+              <td><strong>Unclear announcements</strong><br>
+              <em>Insight (why):</em> People cannot hear or understand route/stop calls, so they ask strangers or miss the right bus.</td>
+            </tr>
+            <tr>
+              <th>4. Theme</th>
+              <td><strong>Informal, broken queues</strong><br>
+              <em>Insight (why):</em> Without clear boarding rules, chaos increases stress and delays when the bus arrives.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h4>🧠 Reflection — Model Answer</h4>
+          <div class="reflection">
+            <p><strong>1. Theme that surprised the group most:</strong> How often “unreliable timing” appeared across almost every interview and observation.</p>
+            <p><strong>2. Insight that could become a design opportunity:</strong> Reliable real-time bus tracking + clearer stop information could reduce missed classes and anxiety.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== 2.2 ========== -->
+    <article class="activity" id="activity-2-2">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 2.2</span>
+          <span class="ah-unit">Unit II</span>
+        </div>
+        <h2 class="ah-title">Develop Three Alternative Problem Statements</h2>
+        <div class="ah-meta">
+          <span>⏱ 40 min</span>
+          <span>👥 Individual</span>
+          <span>📘 § 2.2</span>
+          <span>Theme: Unreliable bus timing information</span>
+        </div>
+      </div>
+      <div class="activity-body">
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Pick one strong theme from the affinity map (2.1).</li>
+            <li>Write three different problem statements using: [User] needs [need] because [insight].</li>
+            <li>Change the framing each time (different user focus, different need, or different insight).</li>
+            <li>Avoid vague users like “people” or “everyone”.</li>
+            <li>Always include the insight (the “because”).</li>
+          </ol>
+        </div>
+
+        <div class="section">
+
+        <div class="diagram-box">
+          <h5>📐 Diagram — Three Framings of the Same Theme</h5>
+          <div class="cluster-src"><span>Theme: Unreliable bus timing</span></div>
+          <div class="arrow-down-center">↓ frame three ways</div>
+          <div class="stmt-flow">
+            <div class="stmt-node"><strong>1. Student focus</strong> — accurate real-time info to avoid missing class</div>
+            <div class="stmt-node"><strong>2. Commuter focus</strong> — dependable wait estimates to reduce anxiety</div>
+            <div class="stmt-node"><strong>3. New rider focus</strong> — clear confirmation without asking strangers</div>
+          </div>
+        </div>
+
+          <h4>📝 Three Statements — Model Answer</h4>
+          <div class="stmt"><strong>1.</strong> College students need accurate, real-time bus arrival information because current apps and boards are often wrong and cause them to miss classes.</div>
+          <div class="stmt"><strong>2.</strong> Daily bus commuters need dependable wait-time estimates at the stop because uncertainty creates anxiety and forces them to leave home much earlier than necessary.</div>
+          <div class="stmt"><strong>3.</strong> First-time and infrequent riders need clear route and timing confirmation at the stop because they currently depend on asking strangers and still miss the correct bus.</div>
+        </div>
+
+        <div class="section">
+          <h4>🧠 Reflection — Model Answer</h4>
+          <div class="reflection">
+            <p><strong>1. Hardest statement:</strong> Statement 3 — framing for infrequent riders needed a different insight than the student-focused ones.</p>
+            <p><strong>2. How framing changes solutions:</strong> Statement 1 points toward better apps/boards; statement 2 toward stress-reducing wait tools; statement 3 toward simpler on-stop guidance for newcomers.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== 2.3 ========== -->
+    <article class="activity" id="activity-2-3">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 2.3</span>
+          <span class="ah-unit">Unit II</span>
+        </div>
+        <h2 class="ah-title">Prepare POV and HMW Statements</h2>
+        <div class="ah-meta">
+          <span>⏱ 45 min</span>
+          <span>👥 Individual</span>
+          <span>📘 § 2.3</span>
+          <span>Problem: Student needs accurate real-time bus info</span>
+        </div>
+      </div>
+      <div class="activity-body">
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Choose one problem statement from 2.2.</li>
+            <li>Rewrite it as a POV: “User needs X because Y.”</li>
+            <li>Generate at least 5 “How Might We…?” questions from that POV.</li>
+            <li>Keep HMWs open (not yes/no, not “build an app”).</li>
+            <li>Pick which HMW opens the most creative space.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+
+        <div class="diagram-box">
+          <h5>📐 Diagram — POV → HMW Bridge</h5>
+          <div class="pov-hmw">
+            <div class="pov-box">POV: Ravi needs trustworthy real-time arrival info because wrong timings make him late and stressed</div>
+            <div class="arrow-down-center">↓ How Might We…?</div>
+            <div class="hmw-grid">
+              <span class="hmw-chip">HMW know time before leaving home?</span>
+              <span class="hmw-chip">HMW clear info at the stop?</span>
+              <span class="hmw-chip">HMW reduce wait anxiety?</span>
+              <span class="hmw-chip">HMW help infrequent riders?</span>
+              <span class="hmw-chip">HMW make info plan-worthy?</span>
+            </div>
+          </div>
+        </div>
+
+          <h4>💬 POV Statement — Model Answer</h4>
+          <div class="stmt">
+            <strong>POV:</strong> Ravi, a college student who depends on the bus every morning, needs trustworthy real-time arrival information because wrong timings make him late to class and increase daily stress.
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>❓ HMW Questions — Model Answer</h4>
+          <div class="filled">
+            <ol>
+              <li>How might we help students know the true arrival time of their bus before they leave home?</li>
+              <li>How might we make wait-time information clear and visible at the bus stop itself?</li>
+              <li>How might we reduce the anxiety of “Will the bus come on time?” during the morning commute?</li>
+              <li>How might we help infrequent riders confirm the correct bus without asking strangers?</li>
+              <li>How might we turn unreliable public transport info into something students can plan their day around?</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>🧠 Reflection — Model Answer</h4>
+          <div class="reflection">
+            <p><strong>1. HMW that opened the most creative space:</strong> #3 — focusing on anxiety allows solutions beyond apps (seating, community updates, status lights, etc.).</p>
+            <p><strong>2. HMW to start ideating on:</strong> #1 — real-time info before leaving home has high impact on punctuality.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== 2.4 ========== -->
+    <article class="activity" id="activity-2-4">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 2.4</span>
+          <span class="ah-unit">Unit II</span>
+        </div>
+        <h2 class="ah-title">Stakeholder Map</h2>
+        <div class="ah-meta">
+          <span>⏱ 40 min</span>
+          <span>👥 Individual / Group</span>
+          <span>📘 § 2.4</span>
+          <span>Project: Reliable bus info for student commuters</span>
+        </div>
+      </div>
+      <div class="activity-body">
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>List everyone affected by or affecting the problem (not only the end user).</li>
+            <li>Place each stakeholder in one of four boxes: Manage Closely, Keep Satisfied, Keep Informed, Monitor.</li>
+            <li>Use influence (power to change things) and interest (how much they care).</li>
+            <li>Note anyone you almost forgot.</li>
+            <li>Identify who could block or boost a solution.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+
+        <div class="diagram-box">
+          <h5>📐 Diagram — Stakeholder 2×2 Grid</h5>
+          <div class="stake-grid">
+            <div class="stake-cell hi-hi">
+              <div class="sc-label">⭐ Manage Closely</div>
+              Students · Bus operators · College admin
+            </div>
+            <div class="stake-cell hi-lo">
+              <div class="sc-label">👥 Keep Satisfied</div>
+              Traffic police · Municipal body · App providers
+            </div>
+            <div class="stake-cell lo-hi">
+              <div class="sc-label">📢 Keep Informed</div>
+              Parents · Elderly riders · Student union
+            </div>
+            <div class="stake-cell lo-lo">
+              <div class="sc-label">👀 Monitor</div>
+              Shopkeepers · Passers-by · Media
+            </div>
+          </div>
+          <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:10px;">
+            Left = High influence · Right = Low influence · Top = High interest · Bottom = Low interest
+          </p>
+        </div>
+
+          <h4>📊 Stakeholder Grid — Model Answer</h4>
+          <table class="map-table">
+            <tr>
+              <th>⭐ Manage Closely<br><small>high influence, high interest</small></th>
+              <td>College students (daily riders) · Transport authority / bus operators · College admin (attendance &amp; punctuality)</td>
+            </tr>
+            <tr>
+              <th>👥 Keep Satisfied<br><small>high influence, low interest</small></th>
+              <td>City traffic police · Municipal body that owns stops · App / tech platform providers</td>
+            </tr>
+            <tr>
+              <th>📢 Keep Informed<br><small>low influence, high interest</small></th>
+              <td>Parents of students · Elderly / occasional riders · Student union / campus clubs</td>
+            </tr>
+            <tr>
+              <th>👀 Monitor<br><small>low influence, low interest</small></th>
+              <td>Local shopkeepers near stops · Casual passers-by · Media (unless a major incident occurs)</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h4>🧠 Reflection — Model Answer</h4>
+          <div class="reflection">
+            <p><strong>1. Initially forgotten:</strong> College admin — they care about late arrivals and can support or resist campus-related solutions.</p>
+            <p><strong>2. Who could block or boost:</strong> Bus operators and transport authority can block data access; student union can boost adoption on campus.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== 2.5 ========== -->
+    <article class="activity" id="activity-2-5">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 2.5</span>
+          <span class="ah-unit">Unit II</span>
+        </div>
+        <h2 class="ah-title">Root-Cause Analysis (5 Whys)</h2>
+        <div class="ah-meta">
+          <span>⏱ 40 min</span>
+          <span>👥 Individual / Group</span>
+          <span>📘 § 2.4</span>
+          <span>Problem: Students miss class due to wrong bus timings</span>
+        </div>
+      </div>
+      <div class="activity-body">
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>Write the visible problem clearly.</li>
+            <li>Ask “Why?” and answer using evidence from research (not pure guesses).</li>
+            <li>Repeat “Why?” on the previous answer until you reach a root cause (usually 5 levels).</li>
+            <li>Do not change the question form — always “Why?”</li>
+            <li>Propose one countermeasure that attacks the root, not only the symptom.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+
+        <div class="diagram-box">
+          <h5>📐 Diagram — 5 Whys Chain</h5>
+          <div class="why-chain">
+            <div class="why-node problem">P: Students late — bus time wrong on app/board</div>
+            <div class="why-arrow">↓ Why?</div>
+            <div class="why-node">Displayed time ≠ actual location</div>
+            <div class="why-arrow">↓ Why?</div>
+            <div class="why-node">Data updated rarely / not live</div>
+            <div class="why-arrow">↓ Why?</div>
+            <div class="why-node">No GPS feed linked to public boards</div>
+            <div class="why-arrow">↓ Why?</div>
+            <div class="why-node">System built for fixed timetables only</div>
+            <div class="why-arrow">↓ Why?</div>
+            <div class="why-node root">🎯 Root: No shared real-time tracking passengers can trust</div>
+          </div>
+        </div>
+
+          <h4>🌳 The Why Chain — Model Answer</h4>
+          <table class="map-table">
+            <tr>
+              <th>P · Problem</th>
+              <td>Students often reach college late because the bus does not arrive when the app/board shows.</td>
+            </tr>
+            <tr>
+              <th>1 · Why?</th>
+              <td>→ The displayed arrival time does not match the actual bus location.</td>
+            </tr>
+            <tr>
+              <th>2 · Why?</th>
+              <td>→ Location/schedule data is updated rarely or not at all in real time.</td>
+            </tr>
+            <tr>
+              <th>3 · Why?</th>
+              <td>→ Many buses have no live GPS feed, or the feed is not connected to public boards/apps.</td>
+            </tr>
+            <tr>
+              <th>4 · Why?</th>
+              <td>→ Transport systems were designed around fixed timetables, not live tracking.</td>
+            </tr>
+            <tr>
+              <th>5 · Why? → Root</th>
+              <td>→ <strong>Root cause:</strong> There is no reliable, shared real-time tracking system that passengers and stop displays can trust.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h4>💡 Proposed Countermeasure</h4>
+          <div class="opportunity">
+            Introduce (or improve) a live bus-tracking feed that updates both mobile apps and stop boards every few minutes, so displayed times match reality.
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>🧠 Reflection — Model Answer</h4>
+          <div class="reflection">
+            <p><strong>1. Did the root surprise you?</strong> Partly — many people blame “the driver” or “traffic,” but the deeper issue is missing live data infrastructure.</p>
+            <p><strong>2. Why fixing only symptoms is temporary:</strong> Adding more seats or louder announcements does not stop wrong timings; only fixing the information system reduces late arrivals at the source.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========== 2.6 ========== -->
+    <article class="activity" id="activity-2-6">
+      <div class="activity-head">
+        <div class="ah-top">
+          <span class="ah-num">🧪 Activity 2.6</span>
+          <span class="ah-unit">Unit II</span>
+        </div>
+        <h2 class="ah-title">Select and Validate One Problem / Opportunity</h2>
+        <div class="ah-meta">
+          <span>⏱ 50 min</span>
+          <span>👥 Group</span>
+          <span>📘 § 2.5 · 2.6 · 2.8</span>
+        </div>
+      </div>
+      <div class="activity-body">
+        <div class="student-flow">
+          <h4>👨‍🏫 What the Student Should Do</h4>
+          <ol>
+            <li>List 3–4 candidate problems from earlier work.</li>
+            <li>Score each on Impact and Feasibility (e.g. 1–5).</li>
+            <li>Talk to 3 real users (with consent) to check if the top problem is real for them.</li>
+            <li>Record yes/no and short notes for each user.</li>
+            <li>Lock one final problem only after validation.</li>
+          </ol>
+        </div>
+
+        <div class="section">
+
+        <div class="diagram-box">
+          <h5>📐 Diagram — Select &amp; Validate</h5>
+          <div class="select-flow">
+            <div class="select-card winner">
+              A. Timing info<br><div class="sc-score">I:5 F:4 ✓</div>
+            </div>
+            <div class="select-card">
+              B. Seating<br><div class="sc-score">I:4 F:3</div>
+            </div>
+            <div class="select-card">
+              C. Announcements<br><div class="sc-score">I:3 F:4</div>
+            </div>
+            <div class="select-card">
+              D. Queues<br><div class="sc-score">I:3 F:3</div>
+            </div>
+          </div>
+          <div class="arrow-down-center">↓ validate with 3 users → all Yes</div>
+          <div class="final-box">
+            ✅ Final: Students need accurate real-time bus arrival information
+          </div>
+        </div>
+
+          <h4>📊 Candidate Scoring — Model Answer</h4>
+          <table class="map-table">
+            <tr>
+              <th>A</th>
+              <td><strong>Unreliable real-time bus timing info</strong> — Impact: 5 · Feasibility: 4</td>
+            </tr>
+            <tr>
+              <th>B</th>
+              <td><strong>No seating at bus stops</strong> — Impact: 4 · Feasibility: 3</td>
+            </tr>
+            <tr>
+              <th>C</th>
+              <td><strong>Unclear verbal announcements</strong> — Impact: 3 · Feasibility: 4</td>
+            </tr>
+            <tr>
+              <th>D</th>
+              <td><strong>Chaotic boarding queues</strong> — Impact: 3 · Feasibility: 3</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h4>✅ Validation Results — Model Answer</h4>
+          <table class="map-table">
+            <tr>
+              <th>User 1</th>
+              <td><strong>Yes</strong> — “I leave 20 minutes early every day because the app is wrong.”</td>
+            </tr>
+            <tr>
+              <th>User 2</th>
+              <td><strong>Yes</strong> — “Last week I missed two classes in a row waiting for a bus that never came on time.”</td>
+            </tr>
+            <tr>
+              <th>User 3</th>
+              <td><strong>Yes</strong> — “Boards at the stop show old times; I always ask other people.”</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h4>🎯 Final Selected Problem</h4>
+          <div class="pain">
+            <strong>Selected:</strong> College students need accurate, real-time bus arrival information because current apps and stop boards are often wrong, causing missed classes and daily stress.
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>🧠 Reflection — Model Answer</h4>
+          <div class="reflection">
+            <p><strong>1. Did validation change the choice?</strong> No — all three users confirmed the timing problem; it stayed the top candidate.</p>
+            <p><strong>2. Evidence that the problem is real:</strong> Unit I observations + interviews + three validation conversations all point to the same issue (wrong / outdated timing info).</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <footer>
+    <div class="sig">@Oyyathevan</div>
+    <div>Model Filled Lab Sheet · Unit II · Problem Definition &amp; Opportunity · 2026</div>
+  </footer>
+
+  <script>
+    document.getElementById('welcomeUser').textContent =
+      'Welcome: ' + (sessionStorage.getItem('lithuUsername') || 'User');
+    document.getElementById('logoutBtn').onclick = function () {
+      sessionStorage.removeItem('lithuLoggedIn');
+      sessionStorage.removeItem('lithuUsername');
+      window.location.href = '../index.html';
+    };
+  </script>
+</body>
+</html>
