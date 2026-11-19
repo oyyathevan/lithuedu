@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Filled Lab Sheet – Unit V | DTI Notes</title>
+  <script src="../auth-check.js"></script>
+  <script>
+    if (sessionStorage.getItem('lithuLoggedIn') !== 'true') {
+      window.location.replace('../index.html');
+    }
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary:#1a73e8;--primary-dark:#0d47a1;--bg:#f0f4f8;--card:#fff;--text:#1e293b;--muted:#64748b;--green:#10b981;--border:#e2e8f0}
+    body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55}
+    html{scroll-behavior:smooth}
+    header{background:linear-gradient(90deg,#0d47a1,#1a73e8);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,.15);position:sticky;top:0;z-index:100}
+    .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:#fff;display:flex;align-items:center;gap:8px}
+    .logo span{background:rgba(255,255,255,.2);padding:3px 10px;border-radius:8px;font-size:.78rem}
+    .header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .welcome-user{font-size:.88rem;background:rgba(255,255,255,.15);padding:7px 14px;border-radius:20px}
+    .btn{border:none;padding:8px 16px;border-radius:20px;font-weight:600;font-size:.88rem;cursor:pointer;text-decoration:none;display:inline-block;transition:.2s}
+    .btn-home{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)}
+    .btn-home:hover{background:rgba(255,255,255,.3)}
+    .btn-practical{background:#f59e0b;color:#fff}
+    .btn-practical:hover{background:#d97706}
+    .btn-logout{background:var(--green);color:#fff}
+    .btn-logout:hover{background:#059669}
+    .wrap{max-width:920px;margin:0 auto;padding:28px 18px 50px}
+    .hero{background:linear-gradient(135deg,#1E3A8A,#2563EB);color:#fff;padding:28px 30px;border-radius:16px;margin-bottom:22px;box-shadow:0 10px 26px rgba(37,99,235,.22)}
+    .hero .tag{font-size:.72rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;opacity:.85;margin-bottom:8px}
+    .hero h1{font-size:1.45rem;margin:0 0 8px;font-weight:800}
+    .hero p{opacity:.92;font-size:.92rem;max-width:700px;margin:0}
+    .badge-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
+    .badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;font-size:.8rem;font-weight:600}
+    .note-box{background:#FEF3C7;border-left:5px solid #F59E0B;padding:14px 18px;border-radius:10px;margin-bottom:24px;font-size:.9rem;color:#92400E}
+    .summary-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:20px;margin-bottom:28px}
+    .summary-box h3{color:var(--primary-dark);margin-bottom:8px;font-size:1.05rem}
+    .vflow{display:flex;flex-direction:column;align-items:center;gap:0;margin:16px 0 8px}
+    .vflow-step{background:#fff;border:2px solid #2563EB;border-radius:12px;padding:14px 20px;width:100%;max-width:540px;box-shadow:0 4px 14px rgba(37,99,235,.1);text-decoration:none;color:inherit;display:block;cursor:pointer;transition:all .2s}
+    .vflow-step:hover{background:#eff6ff;border-color:#1d4ed8;transform:translateY(-2px)}
+    .vflow-step .vs-top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .vflow-step .vs-num{background:#2563EB;color:#fff;font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:8px}
+    .vflow-step .vs-title{font-weight:700;color:#0d47a1;font-size:.95rem}
+    .vflow-step .vs-out{font-size:.82rem;color:#475569}
+    .vflow-step .vs-out strong{color:#059669}
+    .vflow-step .vs-click{font-size:.72rem;color:#2563EB;margin-top:6px;font-weight:600}
+    .vflow-arrow{color:#2563EB;font-size:1.5rem;padding:4px 0}
+    .activity{background:var(--card);border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.07);border:1px solid var(--border);margin-bottom:28px;overflow:hidden}
+    .activity:target{outline:3px solid #2563EB;outline-offset:4px}
+    .activity-head{background:linear-gradient(90deg,#eff6ff,#f8fafc);padding:18px 22px;border-bottom:1px solid var(--border)}
+    .ah-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .ah-num{background:#2563EB;color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px}
+    .ah-unit{font-size:.78rem;color:var(--muted);font-weight:600}
+    .ah-title{font-size:1.15rem;color:var(--primary-dark);margin:4px 0 6px}
+    .ah-meta{display:flex;gap:14px;font-size:.82rem;color:var(--muted);flex-wrap:wrap}
+    .activity-body{padding:22px}
+    .section{margin-bottom:20px}
+    .section h4{font-size:.95rem;color:var(--primary-dark);margin-bottom:8px}
+    .student-flow{background:#fff7ed;border:1px solid #fed7aa;border-left:5px solid #f97316;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:.88rem}
+    .student-flow h4{color:#c2410c;margin-bottom:8px;font-size:.92rem}
+    .student-flow ol{padding-left:18px;color:#9a3412;margin:0}
+    .student-flow li{margin-bottom:4px}
+    .filled{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-top:8px}
+    .filled li{margin-bottom:5px}
+    .reflection{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:14px 16px;margin-top:8px}
+    .reflection p{margin-bottom:8px;font-size:.9rem;color:#5b21b6}
+    table.map-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.88rem}
+    table.map-table th,table.map-table td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top}
+    table.map-table th{background:#eff6ff;color:var(--primary-dark);font-weight:700;width:140px}
+    table.map-table tr:nth-child(even) td{background:#f8fafc}
+    .tag-incr{background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:6px;font-size:.75rem;font-weight:700}
+    .tag-disr{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:6px;font-size:.75rem;font-weight:700}
+    .tag-rad{background:#fce7f3;color:#9d174d;padding:2px 8px;border-radius:6px;font-size:.75rem;font-weight:700}
+    .vpc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+    .vpc-box{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:.85rem}
+    .vpc-box h5{color:var(--primary-dark);margin-bottom:6px;font-size:.9rem}
+    .pitch-beat{background:#eff6ff;border-left:4px solid #2563EB;padding:10px 14px;margin:8px 0;border-radius:0 8px 8px 0;font-size:.88rem}
+    .pitch-beat strong{color:#0d47a1}
+    footer{text-align:center;padding:24px;color:#94a3b8;font-size:.85rem;border-top:1px solid var(--border);margin-top:20px}
+    footer .sig{font-family:Georgia,serif;font-style:italic;font-size:1.15rem;color:#64748b}
+    @media(max-width:640px){.vpc-grid{grid-template-columns:1fr}.logo span{display:none}}
+    @media print{header,.btn-logout,.btn-home,.btn-practical{display:none!important}.activity{break-inside:avoid;box-shadow:none;border:1px solid #ccc}body{background:#fff}}
+  </style>
+</head>
+<body>
+<header>
+  <a href="../index.html" class="logo">🌐 LITHU EDU HYB <span>Education Hub</span></a>
+  <div class="header-right">
+    <span class="welcome-user" id="welcomeUser">Welcome: User</span>
+    <a href="../index.html" class="btn btn-home">← Back to Home</a>
+    <button class="btn btn-logout" id="logoutBtn">Logout</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="tag">Unit V · Model Answer Sheet</div>
+    <h1>📋 Model Filled Lab Sheet – Innovation, Value &amp; Communication</h1>
+    <p>Fully worked answers for Activities 5.1–5.7. Continues <strong>BusPing</strong> (SMS/USSD bus ETA for college students).</p>
+    <div class="badge-row">
+      <span class="badge">🧪 7 Activities</span>
+      <span class="badge">📘 Unit V</span>
+      <span class="badge">✅ Model Answers</span>
+      <a href="practical.html" class="btn btn-practical">← Back to Practical Session</a>
+    </div>
+  </section>
+
+  <div class="note-box">
+    <strong>How to use:</strong> Model answer sheet for Unit V. Same problem thread from Units I–IV.
+    Innovation under focus: <em>BusPing — reliable arrival time by short code, no app required.</em>
+  </div>
+
+  <div class="summary-box">
+    <h3>📌 Overall Unit V Flow — Click any step</h3>
+    <div class="vflow">
+      <a href="#activity-5-1" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">5.1</span><span class="vs-title">Classify Innovation Types</span></div>
+        <div class="vs-out">Incr / Disr / Rad + category → <strong>vocabulary built</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-5-2" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">5.2</span><span class="vs-title">Three Campus Opportunities</span></div>
+        <div class="vs-out">Need · Opportunity · Why now</div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-5-3" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">5.3</span><span class="vs-title">Value Proposition Canvas</span></div>
+        <div class="vs-out">Jobs / Pains / Gains ↔ Relievers / Creators</div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-5-4" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">5.4</span><span class="vs-title">Validate with Users</span></div>
+        <div class="vs-out">Would use? Would pay? Key quote</div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-5-5" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">5.5</span><span class="vs-title">Business Model Canvas</span></div>
+        <div class="vs-out">9 blocks + rough break-even</div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-5-6" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">5.6</span><span class="vs-title">IPR Protection</span></div>
+        <div class="vs-out">Patent / TM / Copyright / Design</div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-5-7" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">5.7</span><span class="vs-title">3-Minute Pitch</span></div>
+        <div class="vs-out">6 beats → clear ask</div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 5.1 -->
+  <article class="activity" id="activity-5-1">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 5.1</span><span class="ah-unit">Unit V</span></div>
+      <h2 class="ah-title">Classify Existing Products as Incremental / Disruptive / Radical</h2>
+      <div class="ah-meta"><span>⏱ 30 min</span><span>👥 Individual</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Pick 4 real products (local or known brands).</li>
+          <li>Classify each: Incremental / Disruptive / Radical.</li>
+          <li>Also tag: Product / Process / Service / Social.</li>
+          <li>Write one “why” sentence per item — no empty boxes.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>📊 Classification Table — Model Answer</h4>
+        <table class="map-table">
+          <tr>
+            <th>1</th>
+            <td><strong>UPI / PhonePe payments</strong><br>
+            <span class="tag-disr">Disruptive</span> · Service<br>
+            <em>Why:</em> Replaced cash and card habits for millions with a simpler, cheaper channel.</td>
+          </tr>
+          <tr>
+            <th>2</th>
+            <td><strong>New smartphone camera megapixels</strong><br>
+            <span class="tag-incr">Incremental</span> · Product<br>
+            <em>Why:</em> Improves an existing product line without changing the market structure.</td>
+          </tr>
+          <tr>
+            <th>3</th>
+            <td><strong>mRNA COVID vaccines</strong><br>
+            <span class="tag-rad">Radical</span> · Product / Process<br>
+            <em>Why:</em> New science platform that changed how vaccines are designed and produced.</td>
+          </tr>
+          <tr>
+            <th>4</th>
+            <td><strong>BusPing (our concept)</strong><br>
+            <span class="tag-disr">Disruptive</span> · Service<br>
+            <em>Why:</em> Serves students poorly served by inaccurate apps, using SMS they already have — simpler, lower barrier.</td>
+          </tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Surprise:</strong> Many “new” phone features are incremental, not radical — novelty ≠ radical innovation.</p>
+          <p><strong>2. Disruptive + radical?</strong> Rare but possible: a radical tech that also undercuts incumbents on simplicity/price (e.g. early PCs). BusPing is disruptive/service, not radical science.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 5.2 -->
+  <article class="activity" id="activity-5-2">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 5.2</span><span class="ah-unit">Unit V</span></div>
+      <h2 class="ah-title">Identify Three Innovation Opportunities from Campus/Community</h2>
+      <div class="ah-meta"><span>⏱ 45 min</span><span>👥 Group</span><span>Domain: Campus transport &amp; student life</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Observe campus/community pain points.</li>
+          <li>Write 3 opportunities with Need, Opportunity, Who/Pain/Why now.</li>
+          <li>Avoid vague problems; include timing (“why now”).</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>💡 Three Innovation Opportunities — Model</h4>
+        <table class="map-table">
+          <tr>
+            <th>1</th>
+            <td><strong>Need:</strong> Trustworthy bus ETA · <strong>Opportunity:</strong> BusPing SMS service<br>
+            <em>Who:</em> College students · <em>Pain:</em> Missed classes · <em>Why now:</em> Apps often wrong; SMS still universal on campus.</td>
+          </tr>
+          <tr>
+            <th>2</th>
+            <td><strong>Need:</strong> Fair hostel mess feedback · <strong>Opportunity:</strong> Anonymous daily rating + menu tip<br>
+            <em>Who:</em> Hostel residents · <em>Pain:</em> Complaints ignored · <em>Why now:</em> Digital forms + admin dashboards are cheap.</td>
+          </tr>
+          <tr>
+            <th>3</th>
+            <td><strong>Need:</strong> Safe late-night campus walk · <strong>Opportunity:</strong> Peer “walk buddy” match by route/time<br>
+            <em>Who:</em> Students after lab/library · <em>Pain:</em> Alone on dark paths · <em>Why now:</em> Phones + student ID auth make matching easy.</td>
+          </tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Most feasible in 4 weeks:</strong> BusPing — already prototyped in Unit IV; can run a campus pilot with a shared phone number.</p>
+          <p><strong>2. Scales beyond campus:</strong> BusPing pattern (simple ETA by code) can extend to other city routes and colleges.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 5.3 -->
+  <article class="activity" id="activity-5-3">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 5.3</span><span class="ah-unit">Unit V</span></div>
+      <h2 class="ah-title">Prepare a Value Proposition Canvas</h2>
+      <div class="ah-meta"><span>⏱ 50 min</span><span>👥 Individual / Group</span><span>Solution: BusPing</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Fill Customer Profile: Jobs, Pains, Gains (from persona/interviews).</li>
+          <li>Fill Value Map: Products/Services, Pain Relievers, Gain Creators.</li>
+          <li>Write one-sentence value proposition.</li>
+          <li>Check fit strength; note weak pairs.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>👤 Customer Profile + 📦 Value Map — Model</h4>
+        <div class="vpc-grid">
+          <div class="vpc-box">
+            <h5>Jobs</h5>
+            Reach college on time; plan morning without stress; use a phone they already have.
+          </div>
+          <div class="vpc-box">
+            <h5>Products / Services</h5>
+            SMS/USSD short-code ETA; optional leave-by time; save-as-contact prompt.
+          </div>
+          <div class="vpc-box">
+            <h5>Pains</h5>
+            Wrong app times; missed classes; anxiety waiting; no data on basic phones.
+          </div>
+          <div class="vpc-box">
+            <h5>Pain Relievers</h5>
+            Real ETA in one message; works offline-ish (SMS); no app install.
+          </div>
+          <div class="vpc-box">
+            <h5>Gains</h5>
+            Confidence to leave later; fewer late marks; simple daily habit.
+          </div>
+          <div class="vpc-box">
+            <h5>Gain Creators</h5>
+            “Leave by HH:MM”; reliable enough to plan around; peer word-of-mouth.
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h4>💎 Value Proposition (one sentence)</h4>
+        <div class="filled">
+          BusPing gives college students a trustworthy bus arrival time in one SMS — so they leave on time without relying on broken apps.
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Strongest fit:</strong> Pain (wrong times / no data) ↔ Reliever (SMS ETA on any phone).</p>
+          <p><strong>2. Weaker fit:</strong> Gain “peer status” is soft; focus remains on reliability and leave-by support.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 5.4 -->
+  <article class="activity" id="activity-5-4">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 5.4</span><span class="ah-unit">Unit V</span></div>
+      <h2 class="ah-title">Validate the Proposed Innovation with Potential Users</h2>
+      <div class="ah-meta"><span>⏱ 60 min</span><span>👥 Group</span><span>Solution: BusPing</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Talk to ~5 target users (not only friends).</li>
+          <li>Ask: would use? how often? would pay? amount?</li>
+          <li>Capture one key quote.</li>
+          <li>Avoid leading questions.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>📊 Validation Summary — Model (n≈5)</h4>
+        <table class="map-table">
+          <tr><th>Would use?</th><td>Yes 5 / No 0</td></tr>
+          <tr><th>How often?</th><td>Most: every morning on class days; some also evening return</td></tr>
+          <tr><th>Would pay?</th><td>Yes 3 / No 2 · Amount: ₹0–20/month (prefer free or college-bundled)</td></tr>
+          <tr><th>Key quote</th><td>“If it works when the app lies, I’ll use it every day — just don’t make me download anything.”</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Willingness-to-pay:</strong> Lower than hoped — students expect free campus services; partner with college or ads later.</p>
+          <p><strong>2. Change before next test:</strong> Pilot as free college service first; test paid only after habit forms.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 5.5 -->
+  <article class="activity" id="activity-5-5">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 5.5</span><span class="ah-unit">Unit V</span></div>
+      <h2 class="ah-title">Prepare an Introductory Business Model Canvas</h2>
+      <div class="ah-meta"><span>⏱ 50 min</span><span>👥 Group</span><span>Venture: BusPing</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Fill all 9 BMC blocks using VPC + validation.</li>
+          <li>Avoid “everyone” as segment.</li>
+          <li>Include a rough break-even note.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>📋 BMC — 9 Blocks (Model)</h4>
+        <table class="map-table">
+          <tr><th>Customer Segments</th><td>College students (daily bus riders); secondary: parents, other city colleges</td></tr>
+          <tr><th>Value Propositions</th><td>Trustworthy ETA by SMS; leave-by time; no app needed</td></tr>
+          <tr><th>Channels</th><td>Campus posters, hostel WhatsApp, student union, short-code publicity</td></tr>
+          <tr><th>Customer Relationships</th><td>Self-serve SMS; light support via college helpdesk</td></tr>
+          <tr><th>Revenue Streams</th><td>College licence / pilot fee; later optional premium alerts; possible operator partnership</td></tr>
+          <tr><th>Key Resources</th><td>Short code / number; ETA data feed or manual ops; simple backend</td></tr>
+          <tr><th>Key Activities</th><td>Keep ETAs accurate; onboard colleges; support codes; iterate replies</td></tr>
+          <tr><th>Key Partnerships</th><td>College admin; bus operators / GPS vendors; SMS gateway</td></tr>
+          <tr><th>Cost Structure</th><td>SMS gateway, number rental, student ops time, basic hosting</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>💡 Rough Break-even</h4>
+        <div class="filled">
+          If one college pays ₹15,000–25,000 per semester for a pilot, gateway + ops costs can be covered for a small multi-route service; free student use, college as payer.
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Hardest block:</strong> Revenue — students resist paying; college-as-customer is more realistic.</p>
+          <p><strong>2. Dependency:</strong> Yes — needs operator data or reliable manual/crowdsourced updates we don’t fully control.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 5.6 -->
+  <article class="activity" id="activity-5-6">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 5.6</span><span class="ah-unit">Unit V</span></div>
+      <h2 class="ah-title">Identify Possible IPR Protection</h2>
+      <div class="ah-meta"><span>⏱ 30 min</span><span>👥 Individual</span><span>Project: BusPing</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>List protectable elements (name, logo, code, unique method).</li>
+          <li>Map to Patent / Trademark / Copyright / Design.</li>
+          <li>Note what cannot be protected (bare ideas, public facts).</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>©️ IPR Mapping — Model</h4>
+        <table class="map-table">
+          <tr><th>1</th><td><strong>Element:</strong> Brand name “BusPing” · <strong>Type:</strong> Trademark · Register name + logo early</td></tr>
+          <tr><th>2</th><td><strong>Element:</strong> App/backend source code · <strong>Type:</strong> Copyright · Automatic on creation; keep repos private</td></tr>
+          <tr><th>3</th><td><strong>Element:</strong> Distinctive logo / icon · <strong>Type:</strong> Trademark + Design (if unique visual)</td></tr>
+          <tr><th>4</th><td><strong>Element:</strong> Specific technical method (if novel) · <strong>Type:</strong> Patent only if inventive step + documentation — unlikely for simple SMS wrapper</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>⚠️ Cannot be protected</h4>
+        <div class="filled">
+          The general idea “send a code, get bus time”; public timetable data; generic SMS patterns already in use.
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. File first:</strong> Trademark for BusPing — cheap, protects brand as we pitch publicly.</p>
+          <p><strong>2. Risk of no protection:</strong> Another group copies the name; confusion on campus and in contests.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 5.7 -->
+  <article class="activity" id="activity-5-7">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 5.7</span><span class="ah-unit">Unit V</span></div>
+      <h2 class="ah-title">Prepare and Deliver a 3-Minute Innovation Pitch</h2>
+      <div class="ah-meta"><span>⏱ 90 min</span><span>👥 Group</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Write 6 beats × ~30 seconds each.</li>
+          <li>Rehearse with timer; cut text-heavy slides.</li>
+          <li>End with a clear ask (pilot, feedback, funding, partnership).</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🎤 Six Beats Script — Model</h4>
+        <div class="pitch-beat"><strong>Problem (30s):</strong> Every morning, students like Ravi check a bus app that is often wrong. They leave early or arrive late — missed classes and constant stress.</div>
+        <div class="pitch-beat"><strong>Solution (30s):</strong> BusPing: text a short code, get a real ETA by SMS. No app, works on basic phones. Optional “leave by” time so you know when to walk out the door.</div>
+        <div class="pitch-beat"><strong>Market (30s):</strong> One mid-size college has thousands of daily bus riders. The same pattern fits other colleges and city routes where apps fail and SMS still works.</div>
+        <div class="pitch-beat"><strong>Model (30s):</strong> Free for students; college pays a semester pilot fee. Later: operator partnerships and optional premium alerts. Low SMS gateway cost.</div>
+        <div class="pitch-beat"><strong>Team (30s):</strong> Design Thinking team that already observed stops, interviewed riders, prototyped, and tested with real students — we know the friction points.</div>
+        <div class="pitch-beat"><strong>Ask (30s):</strong> Approve a 4-week free pilot on two campus routes, with one shared number and student ops support. We will report on-time improvement and usage.</div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Hardest to compress:</strong> Market — easy to over-explain; keep to “thousands of daily riders, same pain elsewhere.”</p>
+          <p><strong>2. Feedback to act on:</strong> Lead with the student story, not the tech; make the ask specific and time-bound.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+</div>
+
+<footer>
+  <div class="sig">@Oyyathevan</div>
+  <div>Model Filled Lab Sheet · Unit V · Innovation, Value &amp; Communication · 2026</div>
+</footer>
+
+<script>
+  document.getElementById('welcomeUser').textContent =
+    'Welcome: ' + (sessionStorage.getItem('lithuUsername') || 'User');
+  document.getElementById('logoutBtn').onclick = function () {
+    sessionStorage.removeItem('lithuLoggedIn');
+    sessionStorage.removeItem('lithuUsername');
+    window.location.href = '../index.html';
+  };
+</script>
+</body>
+</html>

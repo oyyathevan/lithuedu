@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Filled Lab Sheet – Unit III | DTI Notes</title>
+  <script src="../auth-check.js"></script>
+  <script>
+    if (sessionStorage.getItem('lithuLoggedIn') !== 'true') {
+      window.location.replace('../index.html');
+    }
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary:#1a73e8;--primary-dark:#0d47a1;--bg:#f0f4f8;--card:#fff;--text:#1e293b;--muted:#64748b;--green:#10b981;--border:#e2e8f0}
+    body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55}
+    html{scroll-behavior:smooth}
+    header{background:linear-gradient(90deg,#0d47a1,#1a73e8);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,.15);position:sticky;top:0;z-index:100}
+    .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:#fff;display:flex;align-items:center;gap:8px}
+    .logo span{background:rgba(255,255,255,.2);padding:3px 10px;border-radius:8px;font-size:.78rem}
+    .header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .welcome-user{font-size:.88rem;background:rgba(255,255,255,.15);padding:7px 14px;border-radius:20px}
+    .btn{border:none;padding:8px 16px;border-radius:20px;font-weight:600;font-size:.88rem;cursor:pointer;text-decoration:none;display:inline-block;transition:.2s}
+    .btn-home{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)}
+    .btn-home:hover{background:rgba(255,255,255,.3)}
+    .btn-practical{background:#f59e0b;color:#fff}
+    .btn-practical:hover{background:#d97706}
+    .btn-logout{background:var(--green);color:#fff}
+    .btn-logout:hover{background:#059669}
+    .wrap{max-width:920px;margin:0 auto;padding:28px 18px 50px}
+    .hero{background:linear-gradient(135deg,#1E3A8A,#2563EB);color:#fff;padding:28px 30px;border-radius:16px;margin-bottom:22px;box-shadow:0 10px 26px rgba(37,99,235,.22)}
+    .hero .tag{font-size:.72rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;opacity:.85;margin-bottom:8px}
+    .hero h1{font-size:1.5rem;margin:0 0 8px;font-weight:800}
+    .hero p{opacity:.92;font-size:.92rem;max-width:700px;margin:0}
+    .badge-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
+    .badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;font-size:.8rem;font-weight:600}
+    .note-box{background:#FEF3C7;border-left:5px solid #F59E0B;padding:14px 18px;border-radius:10px;margin-bottom:24px;font-size:.9rem;color:#92400E}
+    .summary-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:20px;margin-bottom:28px}
+    .summary-box h3{color:var(--primary-dark);margin-bottom:8px;font-size:1.05rem}
+    .vflow{display:flex;flex-direction:column;align-items:center;gap:0;margin:16px 0 8px}
+    .vflow-step{background:#fff;border:2px solid #2563EB;border-radius:12px;padding:14px 20px;width:100%;max-width:540px;box-shadow:0 4px 14px rgba(37,99,235,.1);text-decoration:none;color:inherit;display:block;cursor:pointer;transition:all .2s}
+    .vflow-step:hover{background:#eff6ff;border-color:#1d4ed8;transform:translateY(-2px)}
+    .vflow-step .vs-top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .vflow-step .vs-num{background:#2563EB;color:#fff;font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:8px}
+    .vflow-step .vs-title{font-weight:700;color:#0d47a1;font-size:.95rem}
+    .vflow-step .vs-out{font-size:.82rem;color:#475569}
+    .vflow-step .vs-out strong{color:#059669}
+    .vflow-step .vs-click{font-size:.72rem;color:#2563EB;margin-top:6px;font-weight:600}
+    .vflow-arrow{color:#2563EB;font-size:1.5rem;padding:4px 0}
+    .activity{background:var(--card);border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.07);border:1px solid var(--border);margin-bottom:28px;overflow:hidden}
+    .activity:target{outline:3px solid #2563EB;outline-offset:4px}
+    .activity-head{background:linear-gradient(90deg,#eff6ff,#f8fafc);padding:18px 22px;border-bottom:1px solid var(--border)}
+    .ah-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .ah-num{background:#2563EB;color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px}
+    .ah-unit{font-size:.78rem;color:var(--muted);font-weight:600}
+    .ah-title{font-size:1.2rem;color:var(--primary-dark);margin:4px 0 6px}
+    .ah-meta{display:flex;gap:14px;font-size:.82rem;color:var(--muted);flex-wrap:wrap}
+    .activity-body{padding:22px}
+    .section{margin-bottom:20px}
+    .section h4{font-size:.95rem;color:var(--primary-dark);margin-bottom:8px}
+    .student-flow{background:#fff7ed;border:1px solid #fed7aa;border-left:5px solid #f97316;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:.88rem}
+    .student-flow h4{color:#c2410c;margin-bottom:8px;font-size:.92rem}
+    .student-flow ol{padding-left:18px;color:#9a3412;margin:0}
+    .student-flow li{margin-bottom:4px}
+    .filled{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-top:8px}
+    .filled li{margin-bottom:5px}
+    .reflection{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:14px 16px;margin-top:8px}
+    .reflection p{margin-bottom:8px;font-size:.9rem;color:#5b21b6}
+    table.map-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.88rem}
+    table.map-table th,table.map-table td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top}
+    table.map-table th{background:#eff6ff;color:var(--primary-dark);font-weight:700;width:130px}
+    table.map-table tr:nth-child(even) td{background:#f8fafc}
+    .idea-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+    .idea-cell{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 10px;font-size:.8rem}
+    .idea-cell b{color:#065f46}
+    .top5{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .top5 span{background:#ecfdf5;border:1.5px solid #059669;border-radius:20px;padding:6px 12px;font-size:.82rem;color:#065f46;font-weight:600}
+    .diagram-box{background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0 18px;overflow-x:auto}
+    .diagram-box h5{font-size:.85rem;color:var(--primary-dark);margin-bottom:12px;font-weight:700}
+    .scamper-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+    .scamper-card{background:#fff;border:2px solid #8b5cf6;border-radius:10px;padding:10px;font-size:.78rem;text-align:center}
+    .scamper-card .sc-l{font-weight:800;color:#6d28d9;margin-bottom:4px}
+    .concept-card{background:linear-gradient(145deg,#eff6ff,#f8fafc);border:2px solid #2563EB;border-radius:12px;padding:14px 16px;margin:8px 0}
+    .concept-card h5{color:#0d47a1;margin-bottom:6px}
+    .concept-card p{font-size:.88rem;color:#334155}
+    .winner-box{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-radius:12px;padding:14px 18px;font-size:.9rem;font-weight:600;margin-top:10px}
+    footer{text-align:center;padding:24px;color:#94a3b8;font-size:.85rem;border-top:1px solid var(--border);margin-top:20px}
+    footer .sig{font-family:Georgia,serif;font-style:italic;font-size:1.15rem;color:#64748b}
+    @media(max-width:640px){.idea-grid{grid-template-columns:1fr 1fr}.logo span{display:none}}
+    @media print{header,.btn-logout,.btn-home,.btn-practical{display:none!important}.activity{break-inside:avoid;box-shadow:none;border:1px solid #ccc}body{background:#fff}}
+  </style>
+</head>
+<body>
+<header>
+  <a href="../index.html" class="logo">🌐 LITHU EDU HYB <span>Education Hub</span></a>
+  <div class="header-right">
+    <span class="welcome-user" id="welcomeUser">Welcome: User</span>
+    <a href="../index.html" class="btn btn-home">← Back to Home</a>
+    <button class="btn btn-logout" id="logoutBtn">Logout</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="tag">Unit III · Model Answer Sheet</div>
+    <h1>📋 Model Filled Lab Sheet – Creativity, Ideation &amp; Concept</h1>
+    <p>Fully worked answers for Activities 3.1–3.7. Continues the same problem: reliable real-time bus arrival info for college students (Ravi Kumar).</p>
+    <div class="badge-row">
+      <span class="badge">🧪 7 Activities</span>
+      <span class="badge">📘 Unit III</span>
+      <span class="badge">✅ Model Answers</span>
+      <a href="practical.html" class="btn btn-practical">← Back to Practical Session</a>
+    </div>
+  </section>
+
+  <div class="note-box">
+    <strong>How to use:</strong> Model / answer sheet for Unit III. Builds on Unit I–II (bus commute / Ravi).
+    HMW used: <em>“How might we help students know the true arrival time of their bus before they leave home?”</em>
+  </div>
+
+  <!-- Overall flow -->
+  <div class="summary-box">
+    <h3>📌 Overall Unit III Flow — Click any step</h3>
+    <div class="vflow">
+      <a href="#activity-3-1" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">3.1</span><span class="vs-title">Generate 20–30 Ideas</span></div>
+        <div class="vs-out">Divergent brainstorm → <strong>30 ideas + Top 5</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-3-2" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">3.2</span><span class="vs-title">SCAMPER Exercise</span></div>
+        <div class="vs-out">Force 7 new angles → <strong>SCAMPER output</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-3-3" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">3.3</span><span class="vs-title">Brainwriting</span></div>
+        <div class="vs-out">Silent group ideas → <strong>built-on concepts</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-3-4" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">3.4</span><span class="vs-title">Biomimicry Ideation</span></div>
+        <div class="vs-out">Nature strategies → <strong>3 bio-inspired ideas</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-3-5" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">3.5</span><span class="vs-title">AI-Assisted Ideation</span></div>
+        <div class="vs-out">AI generate + critique → <strong>evaluated shortlist</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-3-6" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">3.6</span><span class="vs-title">Idea-Selection Matrix</span></div>
+        <div class="vs-out">Weighted scoring → <strong>ranked concepts</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-3-7" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">3.7</span><span class="vs-title">Select Top 2–3 Concepts</span></div>
+        <div class="vs-out">Converge → <strong>concepts ready to prototype</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 3.1 -->
+  <article class="activity" id="activity-3-1">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 3.1</span><span class="ah-unit">Unit III</span></div>
+      <h2 class="ah-title">Generate 20–30 Ideas for a Selected Problem</h2>
+      <div class="ah-meta"><span>⏱ 30 min</span><span>👥 Individual</span><span>HMW: true arrival time before leaving home</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Write the HMW at the top. Set a 20–30 min timer.</li>
+          <li>Write 20–30 ideas without judging — quantity first.</li>
+          <li>Do not stop at 10; later ideas are often better.</li>
+          <li>Pick Top 5 to carry forward.</li>
+          <li>Answer the reflection questions.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>💡 My 20–30 Ideas — Model Answer</h4>
+        <div class="idea-grid">
+          <div class="idea-cell"><b>1.</b> Live GPS bus app</div>
+          <div class="idea-cell"><b>2.</b> SMS alert when bus is 5 min away</div>
+          <div class="idea-cell"><b>3.</b> Colour LED board at stop</div>
+          <div class="idea-cell"><b>4.</b> College WhatsApp bot for routes</div>
+          <div class="idea-cell"><b>5.</b> Shared student tracker group</div>
+          <div class="idea-cell"><b>6.</b> QR code at stop → live map</div>
+          <div class="idea-cell"><b>7.</b> Voice announcement at stop</div>
+          <div class="idea-cell"><b>8.</b> Wearable buzz when bus near</div>
+          <div class="idea-cell"><b>9.</b> Campus kiosk with live times</div>
+          <div class="idea-cell"><b>10.</b> Integrate into college portal</div>
+          <div class="idea-cell"><b>11.</b> Crowdsourced “bus spotted” app</div>
+          <div class="idea-cell"><b>12.</b> Predicted delay score (traffic AI)</div>
+          <div class="idea-cell"><b>13.</b> Morning email digest of times</div>
+          <div class="idea-cell"><b>14.</b> Colour cards on bus (route ID)</div>
+          <div class="idea-cell"><b>15.</b> Smart watch complication</div>
+          <div class="idea-cell"><b>16.</b> Community radio short updates</div>
+          <div class="idea-cell"><b>17.</b> Stop mirror with digital overlay</div>
+          <div class="idea-cell"><b>18.</b> Parent-shared tracking link</div>
+          <div class="idea-cell"><b>19.</b> Offline timetable + live delta</div>
+          <div class="idea-cell"><b>20.</b> Peer “I’m on this bus” check-in</div>
+          <div class="idea-cell"><b>21.</b> AR arrow on phone camera</div>
+          <div class="idea-cell"><b>22.</b> Bus horn pattern by route</div>
+          <div class="idea-cell"><b>23.</b> Hostel notice board live feed</div>
+          <div class="idea-cell"><b>24.</b> Simple USSD code for time</div>
+          <div class="idea-cell"><b>25.</b> Guaranteed “leave by” alarm</div>
+          <div class="idea-cell"><b>26.</b> Partner with transport authority API</div>
+          <div class="idea-cell"><b>27.</b> Colour light on student’s keychain</div>
+          <div class="idea-cell"><b>28.</b> Class group auto-ping</div>
+          <div class="idea-cell"><b>29.</b> Historical reliability score per route</div>
+          <div class="idea-cell"><b>30.</b> “Safe to leave now?” yes/no button</div>
+        </div>
+      </div>
+      <div class="section">
+        <h4>⭐ Top 5 (to carry forward)</h4>
+        <div class="top5">
+          <span>1. Live GPS bus app</span>
+          <span>2. SMS when 5 min away</span>
+          <span>3. QR at stop → live map</span>
+          <span>4. Crowdsourced “bus spotted”</span>
+          <span>5. “Safe to leave now?” button</span>
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Idea after #15:</strong> “Safe to leave now?” (#30) — a simple decision aid that would have been missed if we stopped early.</p>
+          <p><strong>2. Judging:</strong> Early ideas felt “too obvious”; we forced quantity and kept writing until wilder options appeared.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 3.2 -->
+  <article class="activity" id="activity-3-2">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 3.2</span><span class="ah-unit">Unit III</span></div>
+      <h2 class="ah-title">SCAMPER Exercise</h2>
+      <div class="ah-meta"><span>⏱ 40 min</span><span>👥 Individual</span><span>Product: Existing bus timetable / arrival board</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Choose one product/process (here: static bus board / printed timetable).</li>
+          <li>Apply each SCAMPER letter to one element at a time.</li>
+          <li>Write a concrete idea for S, C, A, M, P, E, R — no vague “make it better”.</li>
+          <li>Note which lens was most productive and which was hardest.</li>
+        </ol>
+      </div>
+      <div class="diagram-box">
+        <h5>📐 SCAMPER on: Static bus arrival board</h5>
+        <div class="scamper-row">
+          <div class="scamper-card"><div class="sc-l">S</div>Substitute paper times with live LED digits</div>
+          <div class="scamper-card"><div class="sc-l">C</div>Combine board + student phone push alerts</div>
+          <div class="scamper-card"><div class="sc-l">A</div>Adapt airport flight-board style to buses</div>
+          <div class="scamper-card"><div class="sc-l">M</div>Modify size — pocket card version of the board</div>
+          <div class="scamper-card"><div class="sc-l">P</div>Put to use as campus event display after hours</div>
+          <div class="scamper-card"><div class="sc-l">E</div>Eliminate fixed times; show only “arriving in X min”</div>
+          <div class="scamper-card"><div class="sc-l">R</div>Reverse — bus “calls” the stop when near, not user checking board</div>
+        </div>
+      </div>
+      <div class="section">
+        <h4>🔁 SCAMPER Output — Model Answer</h4>
+        <table class="map-table">
+          <tr><th>S · Substitute</th><td>Replace printed schedule with live digital countdown from GPS.</td></tr>
+          <tr><th>C · Combine</th><td>Board + college ID card: tap card to see only your usual routes.</td></tr>
+          <tr><th>A · Adapt</th><td>Borrow airport “Departures” board layout for multi-route stops.</td></tr>
+          <tr><th>M · Modify</th><td>Larger high-contrast numbers for elderly / low light.</td></tr>
+          <tr><th>P · Put to other use</th><td>Same screen shows class delay notices in the evening.</td></tr>
+          <tr><th>E · Eliminate</th><td>Remove full day timetable; show only next 3 buses.</td></tr>
+          <tr><th>R · Reverse</th><td>Instead of user checking board, bus sends “I’m 2 min away” to subscribed phones.</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Most productive:</strong> Reverse — flipped the interaction and opened the “bus calls you” direction.</p>
+          <p><strong>2. Hardest:</strong> Put to another use — the board feels single-purpose; stretching it took more thought.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 3.3 -->
+  <article class="activity" id="activity-3-3">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 3.3</span><span class="ah-unit">Unit III</span></div>
+      <h2 class="ah-title">Brainwriting Exercise</h2>
+      <div class="ah-meta"><span>⏱ 30 min</span><span>👥 Group (4–6)</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Each person writes 3 ideas silently (2–3 min).</li>
+          <li>Pass the sheet; read previous ideas; add 3 new ones that build on them.</li>
+          <li>Repeat until sheets return; no talking during writing.</li>
+          <li>Discuss best ideas as a group and list them.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>💡 My Ideas (before passing) — Model</h4>
+        <div class="filled">
+          <ol>
+            <li>App that shows only my two daily buses with live ETA.</li>
+            <li>Stop light that turns green when any bus is &lt; 3 min away.</li>
+            <li>Shared class chat auto-posts “Bus 12 spotted at Main Gate.”</div>
+          </ol>
+        </div>
+      </div>
+      <div class="section">
+        <h4>🌟 Best Ideas from the Group — Model</h4>
+        <div class="filled">
+          <ol>
+            <li>Hybrid: live ETA app + physical green light at the stop (built on #1 + #2).</li>
+            <li>“Bus spotted” button that updates everyone’s map (built on #3).</li>
+            <li>Morning “leave by 7:42” alarm that adjusts with live delay.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Silent vs talking:</strong> Silent writing gave quieter members equal voice and reduced dominant opinions.</p>
+          <p><strong>2. Building on ideas:</strong> Seeing someone improve my “app” idea into a hybrid felt rewarding and less competitive.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 3.4 -->
+  <article class="activity" id="activity-3-4">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 3.4</span><span class="ah-unit">Unit III</span></div>
+      <h2 class="ah-title">Biomimicry-Based Ideation</h2>
+      <div class="ah-meta"><span>⏱ 45 min</span><span>👥 Individual</span><span>Problem: reliable arrival info before leaving</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Pick the problem (need for trustworthy arrival signal).</li>
+          <li>Find 3 organisms with a relevant strategy (not just “looks cool”).</li>
+          <li>For each: Organism → Strategy → My product idea.</li>
+          <li>Translate strategy into a concrete human solution.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🐦 Nature → Solution — Model Answer</h4>
+        <table class="map-table">
+          <tr>
+            <th>1</th>
+            <td><strong>Organism:</strong> Honeybee waggle dance<br>
+            <strong>Strategy:</strong> Precise direction + distance signal to the hive<br>
+            <strong>My idea:</strong> Phone vibration pattern that encodes “route + minutes left” so students can feel arrival info without looking.</td>
+          </tr>
+          <tr>
+            <th>2</th>
+            <td><strong>Organism:</strong> Firefly synchronised flashing<br>
+            <strong>Strategy:</strong> Group light signal that is easy to notice at a distance<br>
+            <strong>My idea:</strong> Stop lamp that pulses faster as the bus approaches — readable from the hostel gate.</td>
+          </tr>
+          <tr>
+            <th>3</th>
+            <td><strong>Organism:</strong> Ant pheromone trails<br>
+            <strong>Strategy:</strong> Path strength increases with successful use<br>
+            <strong>My idea:</strong> Crowdsourced reliability score: routes that arrived on time get stronger “trust trail” in the app ranking.</td>
+          </tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Surprising strategy:</strong> Firefly sync — using pulse rate as a distance cue is simple and low-tech.</p>
+          <p><strong>2. Why nature helps:</strong> Nature has already solved signal, timing, and coordination problems under real constraints.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 3.5 -->
+  <article class="activity" id="activity-3-5">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 3.5</span><span class="ah-unit">Unit III</span></div>
+      <h2 class="ah-title">AI-Assisted Idea Generation &amp; Critical Evaluation</h2>
+      <div class="ah-meta"><span>⏱ 40 min</span><span>👥 Individual</span><span>AI tool: ChatGPT / similar</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Write a clear prompt with your HMW and user context.</li>
+          <li>Ask AI for 8–10 ideas.</li>
+          <li>Evaluate top 5 with Desirable / Feasible / Viable checkboxes.</li>
+          <li>Reject ideas that ignore real constraints (data access, cost, literacy).</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🤖 AI Prompt Used — Model</h4>
+        <div class="filled">
+          “You are helping design for college students in a mid-size Indian city who miss class because bus apps show wrong times. HMW: help them know true arrival time before leaving home. Give 10 practical, low-to-medium cost ideas. Avoid only ‘build a full GPS network’.”
+        </div>
+      </div>
+      <div class="section">
+        <h4>🎯 Evaluation of Top AI Ideas — Model</h4>
+        <table class="map-table">
+          <tr><th>1</th><td>SMS ETA via USSD shortcode — Desirable ✅ Feasible ✅ Viable ✅</td></tr>
+          <tr><th>2</th><td>Crowdsourced “bus spotted” button — Desirable ✅ Feasible ✅ Viable ✅</td></tr>
+          <tr><th>3</th><td>Full city-wide hardware GPS retrofit — Desirable ✅ Feasible ❌ Viable ❌</td></tr>
+          <tr><th>4</th><td>College-run route WhatsApp bot — Desirable ✅ Feasible ✅ Viable ✅</td></tr>
+          <tr><th>5</th><td>Drone surveillance of routes — Desirable ❌ Feasible ❌ Viable ❌</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Impressive but impractical:</strong> Drone surveillance and full GPS retrofit sound advanced but fail feasibility/cost.</p>
+          <p><strong>2. Human judgment:</strong> AI does not know local operator politics, student phone types, or data costs — we must filter.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 3.6 -->
+  <article class="activity" id="activity-3-6">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 3.6</span><span class="ah-unit">Unit III</span></div>
+      <h2 class="ah-title">Prepare an Idea-Selection Matrix</h2>
+      <div class="ah-meta"><span>⏱ 45 min</span><span>👥 Individual / Group</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Shortlist 4 ideas (A–D) from earlier activities.</li>
+          <li>Define 4 weighted criteria (weights sum to 100%).</li>
+          <li>Score each idea 1–5 per criterion; compute weighted totals.</li>
+          <li>Identify the winner and test if changing a weight flips the result.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>📊 Idea-Selection Matrix — Model Answer</h4>
+        <p style="font-size:.85rem;color:#64748b;margin-bottom:8px">
+          <strong>A</strong> Live GPS app · <strong>B</strong> SMS / USSD ETA · <strong>C</strong> Crowdsourced “spotted” · <strong>D</strong> QR stop → live map
+        </p>
+        <table class="map-table">
+          <tr>
+            <th>Criterion</th>
+            <td><strong>User impact (30%)</strong> — A:5 · B:4 · C:4 · D:4</td>
+          </tr>
+          <tr>
+            <th>Criterion</th>
+            <td><strong>Feasibility (25%)</strong> — A:3 · B:5 · C:4 · D:4</td>
+          </tr>
+          <tr>
+            <th>Criterion</th>
+            <td><strong>Cost / sustainability (25%)</strong> — A:2 · B:5 · C:5 · D:3</td>
+          </tr>
+          <tr>
+            <th>Criterion</th>
+            <td><strong>Fits student context (20%)</strong> — A:4 · B:5 · C:4 · D:4</td>
+          </tr>
+          <tr>
+            <th>Σ Total</th>
+            <td>
+              A: 5×.3+3×.25+2×.25+4×.2 = <strong>3.55</strong> ·
+              B: 4×.3+5×.25+5×.25+5×.2 = <strong>4.70</strong> ·
+              C: 4×.3+4×.25+5×.25+4×.2 = <strong>4.25</strong> ·
+              D: 4×.3+4×.25+3×.25+4×.2 = <strong>3.75</strong>
+            </td>
+          </tr>
+        </table>
+        <div class="winner-box">🏆 Winner: B — SMS / USSD ETA (highest total, strong feasibility + low cost)</div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Surprise:</strong> Live GPS app felt “best” but scored lower on cost and feasibility.</p>
+          <p><strong>2. Weight change:</strong> If User impact were 50%, A would rise, but B would likely still lead on practicality.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 3.7 -->
+  <article class="activity" id="activity-3-7">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 3.7</span><span class="ah-unit">Unit III</span></div>
+      <h2 class="ah-title">Select the Top 2–3 Concepts</h2>
+      <div class="ah-meta"><span>⏱ 40 min</span><span>👥 Group</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Use matrix results and group discussion.</li>
+          <li>Pick 2–3 concepts worth prototyping — not more.</li>
+          <li>Write a short name + one-line pitch for each.</li>
+          <li>Decide which to prototype first and why.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🏆 Selected Concepts — Model Answer</h4>
+        <div class="concept-card">
+          <h5>1. BusPing (SMS / USSD ETA)</h5>
+          <p><strong>Pitch:</strong> Dial a short code or save one number — get the real arrival time for your route in under 10 seconds, no smartphone data needed.</p>
+        </div>
+        <div class="concept-card">
+          <h5>2. SpotBus (Crowdsourced check-in)</h5>
+          <p><strong>Pitch:</strong> Students tap “I see Bus 12” and the map updates for everyone on that route — trust grows with more check-ins.</p>
+        </div>
+        <div class="concept-card">
+          <h5>3. LeaveNow (Smart leave alarm)</h5>
+          <p><strong>Pitch:</strong> App learns your stop and class time, then tells you the latest safe minute to leave based on live delay.</p>
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. What made the top stand out:</strong> BusPing scores high on feasibility, cost, and reach (works on basic phones).</p>
+          <p><strong>2. Prototype first:</strong> BusPing — can be tested with a simple manual SMS backend before any full system build.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+</div>
+
+<footer>
+  <div class="sig">@Oyyathevan</div>
+  <div>Model Filled Lab Sheet · Unit III · Creativity, Ideation &amp; Concept · 2026</div>
+</footer>
+
+<script>
+  document.getElementById('welcomeUser').textContent =
+    'Welcome: ' + (sessionStorage.getItem('lithuUsername') || 'User');
+  document.getElementById('logoutBtn').onclick = function () {
+    sessionStorage.removeItem('lithuLoggedIn');
+    sessionStorage.removeItem('lithuUsername');
+    window.location.href = '../index.html';
+  };
+</script>
+</body>
+</html>

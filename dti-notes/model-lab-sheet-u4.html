@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Filled Lab Sheet – Unit IV | DTI Notes</title>
+  <script src="../auth-check.js"></script>
+  <script>
+    if (sessionStorage.getItem('lithuLoggedIn') !== 'true') {
+      window.location.replace('../index.html');
+    }
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary:#1a73e8;--primary-dark:#0d47a1;--bg:#f0f4f8;--card:#fff;--text:#1e293b;--muted:#64748b;--green:#10b981;--border:#e2e8f0}
+    body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55}
+    html{scroll-behavior:smooth}
+    header{background:linear-gradient(90deg,#0d47a1,#1a73e8);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,.15);position:sticky;top:0;z-index:100}
+    .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:#fff;display:flex;align-items:center;gap:8px}
+    .logo span{background:rgba(255,255,255,.2);padding:3px 10px;border-radius:8px;font-size:.78rem}
+    .header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .welcome-user{font-size:.88rem;background:rgba(255,255,255,.15);padding:7px 14px;border-radius:20px}
+    .btn{border:none;padding:8px 16px;border-radius:20px;font-weight:600;font-size:.88rem;cursor:pointer;text-decoration:none;display:inline-block;transition:.2s}
+    .btn-home{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4)}
+    .btn-home:hover{background:rgba(255,255,255,.3)}
+    .btn-practical{background:#f59e0b;color:#fff}
+    .btn-practical:hover{background:#d97706}
+    .btn-logout{background:var(--green);color:#fff}
+    .btn-logout:hover{background:#059669}
+    .wrap{max-width:920px;margin:0 auto;padding:28px 18px 50px}
+    .hero{background:linear-gradient(135deg,#1E3A8A,#2563EB);color:#fff;padding:28px 30px;border-radius:16px;margin-bottom:22px;box-shadow:0 10px 26px rgba(37,99,235,.22)}
+    .hero .tag{font-size:.72rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;opacity:.85;margin-bottom:8px}
+    .hero h1{font-size:1.5rem;margin:0 0 8px;font-weight:800}
+    .hero p{opacity:.92;font-size:.92rem;max-width:700px;margin:0}
+    .badge-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
+    .badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;font-size:.8rem;font-weight:600}
+    .note-box{background:#FEF3C7;border-left:5px solid #F59E0B;padding:14px 18px;border-radius:10px;margin-bottom:24px;font-size:.9rem;color:#92400E}
+    .summary-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:20px;margin-bottom:28px}
+    .summary-box h3{color:var(--primary-dark);margin-bottom:8px;font-size:1.05rem}
+    .vflow{display:flex;flex-direction:column;align-items:center;gap:0;margin:16px 0 8px}
+    .vflow-step{background:#fff;border:2px solid #2563EB;border-radius:12px;padding:14px 20px;width:100%;max-width:540px;box-shadow:0 4px 14px rgba(37,99,235,.1);text-decoration:none;color:inherit;display:block;cursor:pointer;transition:all .2s}
+    .vflow-step:hover{background:#eff6ff;border-color:#1d4ed8;transform:translateY(-2px)}
+    .vflow-step .vs-top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .vflow-step .vs-num{background:#2563EB;color:#fff;font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:8px}
+    .vflow-step .vs-title{font-weight:700;color:#0d47a1;font-size:.95rem}
+    .vflow-step .vs-out{font-size:.82rem;color:#475569}
+    .vflow-step .vs-out strong{color:#059669}
+    .vflow-step .vs-click{font-size:.72rem;color:#2563EB;margin-top:6px;font-weight:600}
+    .vflow-arrow{color:#2563EB;font-size:1.5rem;padding:4px 0}
+    .activity{background:var(--card);border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.07);border:1px solid var(--border);margin-bottom:28px;overflow:hidden}
+    .activity:target{outline:3px solid #2563EB;outline-offset:4px}
+    .activity-head{background:linear-gradient(90deg,#eff6ff,#f8fafc);padding:18px 22px;border-bottom:1px solid var(--border)}
+    .ah-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .ah-num{background:#2563EB;color:#fff;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:6px}
+    .ah-unit{font-size:.78rem;color:var(--muted);font-weight:600}
+    .ah-title{font-size:1.2rem;color:var(--primary-dark);margin:4px 0 6px}
+    .ah-meta{display:flex;gap:14px;font-size:.82rem;color:var(--muted);flex-wrap:wrap}
+    .activity-body{padding:22px}
+    .section{margin-bottom:20px}
+    .section h4{font-size:.95rem;color:var(--primary-dark);margin-bottom:8px}
+    .student-flow{background:#fff7ed;border:1px solid #fed7aa;border-left:5px solid #f97316;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:.88rem}
+    .student-flow h4{color:#c2410c;margin-bottom:8px;font-size:.92rem}
+    .student-flow ol{padding-left:18px;color:#9a3412;margin:0}
+    .student-flow li{margin-bottom:4px}
+    .filled{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-top:8px}
+    .filled li{margin-bottom:5px}
+    .reflection{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:14px 16px;margin-top:8px}
+    .reflection p{margin-bottom:8px;font-size:.9rem;color:#5b21b6}
+    table.map-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.88rem}
+    table.map-table th,table.map-table td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top}
+    table.map-table th{background:#eff6ff;color:var(--primary-dark);font-weight:700;width:140px}
+    table.map-table tr:nth-child(even) td{background:#f8fafc}
+    .panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+    .panel{background:#fff;border:2px solid #2563EB;border-radius:10px;padding:12px;font-size:.8rem;min-height:90px}
+    .panel .pn{font-weight:800;color:#2563EB;margin-bottom:4px;font-size:.75rem}
+    .sev-red{color:#dc2626;font-weight:700}
+    .sev-yellow{color:#d97706;font-weight:700}
+    .sev-green{color:#059669;font-weight:700}
+    .winner-box{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-radius:12px;padding:14px 18px;font-size:.9rem;font-weight:600;margin-top:10px}
+    footer{text-align:center;padding:24px;color:#94a3b8;font-size:.85rem;border-top:1px solid var(--border);margin-top:20px}
+    footer .sig{font-family:Georgia,serif;font-style:italic;font-size:1.15rem;color:#64748b}
+    @media(max-width:640px){.panel-grid{grid-template-columns:1fr 1fr}.logo span{display:none}}
+    @media print{header,.btn-logout,.btn-home,.btn-practical{display:none!important}.activity{break-inside:avoid;box-shadow:none;border:1px solid #ccc}body{background:#fff}}
+  </style>
+</head>
+<body>
+<header>
+  <a href="../index.html" class="logo">🌐 LITHU EDU HYB <span>Education Hub</span></a>
+  <div class="header-right">
+    <span class="welcome-user" id="welcomeUser">Welcome: User</span>
+    <a href="../index.html" class="btn btn-home">← Back to Home</a>
+    <button class="btn btn-logout" id="logoutBtn">Logout</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="tag">Unit IV · Model Answer Sheet</div>
+    <h1>📋 Model Filled Lab Sheet – Prototyping, Testing &amp; Validation</h1>
+    <p>Fully worked answers for Activities 4.1–4.7. Continues <strong>BusPing</strong> (SMS/USSD ETA for college bus riders) from Unit III.</p>
+    <div class="badge-row">
+      <span class="badge">🧪 7 Activities</span>
+      <span class="badge">📘 Unit IV</span>
+      <span class="badge">✅ Model Answers</span>
+      <a href="practical.html" class="btn btn-practical">← Back to Practical Session</a>
+    </div>
+  </section>
+
+  <div class="note-box">
+    <strong>How to use:</strong> Model answer sheet for Unit IV. Concept under test:
+    <em>BusPing — dial a short code, get real arrival time for your bus route in seconds (works on basic phones).</em>
+  </div>
+
+  <div class="summary-box">
+    <h3>📌 Overall Unit IV Flow — Click any step</h3>
+    <div class="vflow">
+      <a href="#activity-4-1" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">4.1</span><span class="vs-title">Low-Fidelity Prototype</span></div>
+        <div class="vs-out">Paper/role-play → <strong>test one core question</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-4-2" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">4.2</span><span class="vs-title">Storyboard</span></div>
+        <div class="vs-out">6 panels → <strong>user journey with BusPing</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-4-3" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">4.3</span><span class="vs-title">Physical / Digital Prototype</span></div>
+        <div class="vs-out">Working model → <strong>one complete task flow</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-4-4" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">4.4</span><span class="vs-title">User Testing</span></div>
+        <div class="vs-out">3 testers → <strong>task log + errors</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-4-5" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">4.5</span><span class="vs-title">Structured Feedback</span></div>
+        <div class="vs-out">Themes + severity → <strong>Top 3 fixes</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-4-6" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">4.6</span><span class="vs-title">Modify the Prototype</span></div>
+        <div class="vs-out">v1 → v2 → <strong>measurable improvements</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+      <div class="vflow-arrow">↓</div>
+      <a href="#activity-4-7" class="vflow-step">
+        <div class="vs-top"><span class="vs-num">4.7</span><span class="vs-title">Iteration Log</span></div>
+        <div class="vs-out">Full history → <strong>evidence of learning</strong></div>
+        <div class="vs-click">Click to open ↓</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 4.1 -->
+  <article class="activity" id="activity-4-1">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 4.1</span><span class="ah-unit">Unit IV</span></div>
+      <h2 class="ah-title">Develop a Low-Fidelity Prototype</h2>
+      <div class="ah-meta"><span>⏱ 60 min</span><span>👥 Individual / Group</span><span>Concept: BusPing</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Pick one concept (BusPing) and one question to test.</li>
+          <li>Build the cheapest version that answers that question (paper, role-play, cardboard phone).</li>
+          <li>Do not polish — rough is better for honest feedback.</li>
+          <li>Note what you left out and why.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🎨 Prototype Description — Model Answer</h4>
+        <table class="map-table">
+          <tr><th>🎯 Question tested</th><td>Can a student get a useful arrival time by sending one SMS/USSD code, without opening an app?</td></tr>
+          <tr><th>📦 What was built</th><td>Paper phone mock-up + handwritten “reply SMS” cards. Facilitator plays the system: student “sends” route code on paper; facilitator hands back a reply card with ETA.</td></tr>
+          <tr><th>⏱ Time taken</th><td>~45 minutes</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Left out:</strong> Real network, GPS, multiple routes UI — only needed to test the “one message → one clear ETA” interaction.</p>
+          <p><strong>2. Beyond a sketch:</strong> Watching someone hold the paper phone and wait for the reply shows hesitation, mis-typed codes, and whether the reply text is clear enough.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 4.2 -->
+  <article class="activity" id="activity-4-2">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 4.2</span><span class="ah-unit">Unit IV</span></div>
+      <h2 class="ah-title">Prepare a Storyboard</h2>
+      <div class="ah-meta"><span>⏱ 45 min</span><span>👥 Individual</span><span>Persona: Ravi Kumar</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Use persona from Unit I (Ravi).</li>
+          <li>Draw 6 panels: problem → steps with solution → outcome/feeling.</li>
+          <li>Stay in the user’s view, not the designer’s.</li>
+          <li>Keep 4–5 key moments only.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🎬 Panel Descriptions — Model Answer</h4>
+        <div class="panel-grid">
+          <div class="panel"><div class="pn">1 · Trigger</div>Ravi checks the old app — time is wrong again; he risks missing class.</div>
+          <div class="panel"><div class="pn">2 · Step 1</div>He opens Messages and sends the short code for his usual route (e.g. BUS12).</div>
+          <div class="panel"><div class="pn">3 · Step 2</div>Within seconds he gets a reply: “Bus 12 · ~8 min · Gate stop”.</div>
+          <div class="panel"><div class="pn">4 · Step 3</div>He finishes tea, leaves home at the right moment, walks calmly to the stop.</div>
+          <div class="panel"><div class="pn">5 · Step 4</div>Bus arrives close to the ETA; he boards without running.</div>
+          <div class="panel"><div class="pn">6 · Outcome</div>Reaches college on time, feels less anxious — “I can trust this.”</div>
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Hardest panel:</strong> Panel 3 — making the reply message short and clear enough to show in one frame.</p>
+          <p><strong>2. Gap revealed:</strong> What if the student doesn’t know the route code? Need a simple way to learn/save codes.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 4.3 -->
+  <article class="activity" id="activity-4-3">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 4.3</span><span class="ah-unit">Unit IV</span></div>
+      <h2 class="ah-title">Build a Physical / Digital Prototype</h2>
+      <div class="ah-meta"><span>⏱ 90 min</span><span>👥 Group</span><span>Type: Digital + role-play backend</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Pick Physical or Digital (or hybrid).</li>
+          <li>Build only one complete task flow.</li>
+          <li>Keep fidelity just high enough for a real user to try the task.</li>
+          <li>Record build time and approximate cost.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🔧 Prototype Summary — Model Answer</h4>
+        <table class="map-table">
+          <tr><th>🏗 Type</th><td><strong>Digital (clickable phone mock) + role-play SMS backend</strong></td></tr>
+          <tr><th>🎯 Flow covered</th><td>Open messages → type route code → send → receive ETA reply → decide when to leave</td></tr>
+          <tr><th>⏱ Build time</th><td>~75 minutes</td></tr>
+          <tr><th>💰 Cost</th><td>≈ ₹0 (paper + free Figma-style screens / phone mock)</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Harder than expected:</strong> Writing reply text that feels real and fits one SMS line.</p>
+          <p><strong>2. v2 will improve:</strong> Saved favourite routes so the user does not retype the code every time.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 4.4 -->
+  <article class="activity" id="activity-4-4">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 4.4</span><span class="ah-unit">Unit IV</span></div>
+      <h2 class="ah-title">Conduct User Testing</h2>
+      <div class="ah-meta"><span>⏱ 60 min</span><span>👥 Group</span><span># Testers: 3</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Recruit 3–5 real users (not only close friends).</li>
+          <li>Give 2–3 tasks; do not help when they struggle.</li>
+          <li>Log time, errors, and notes for each tester.</li>
+          <li>Watch more than explain.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🎯 Tasks Given — Model</h4>
+        <div class="filled">
+          <ol>
+            <li>Find out when Bus 12 will reach the Gate stop.</li>
+            <li>Decide whether you should leave home now or wait 10 minutes.</li>
+            <li>Save or remember the code so you can use it again tomorrow.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="section">
+        <h4>📝 Test Log — Model Answer</h4>
+        <table class="map-table">
+          <tr><th>Tester 1</th><td>Time: 1:40 · Errors: 1 (wrong code format) · Notes: Asked “Do I need spaces?”</td></tr>
+          <tr><th>Tester 2</th><td>Time: 1:10 · Errors: 0 · Notes: Understood reply immediately; wanted “leave by” time.</td></tr>
+          <tr><th>Tester 3</th><td>Time: 2:05 · Errors: 2 · Notes: Tried to open an app first; later succeeded with SMS.</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Most struggle:</strong> Knowing the exact code format (spaces / uppercase).</p>
+          <p><strong>2. Unexpected:</strong> Several wanted a “leave by HH:MM” suggestion, not only “arrives in X min”.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 4.5 -->
+  <article class="activity" id="activity-4-5">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 4.5</span><span class="ah-unit">Unit IV</span></div>
+      <h2 class="ah-title">Collect Structured Feedback</h2>
+      <div class="ah-meta"><span>⏱ 30 min</span><span>👥 Individual</span><span>Prototype: BusPing v1</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Group test notes into themes.</li>
+          <li>Mark severity: 🔴 high · 🟡 medium · 🟢 low.</li>
+          <li>Write a concrete recommendation for each theme.</li>
+          <li>Pick Top 3 fixes for v2.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>📊 Feedback Themes — Model Answer</h4>
+        <table class="map-table">
+          <tr><th>1</th><td><strong>Theme:</strong> Code format unclear · <span class="sev-red">🔴 High</span><br><strong>Rec:</strong> Accept flexible input; show example “BUS12” on first use.</td></tr>
+          <tr><th>2</th><td><strong>Theme:</strong> Want “leave by” time · <span class="sev-yellow">🟡 Medium</span><br><strong>Rec:</strong> Add optional line: “Leave by 7:42 if walking 8 min.”</td></tr>
+          <tr><th>3</th><td><strong>Theme:</strong> Habit of opening apps · <span class="sev-green">🟢 Low</span><br><strong>Rec:</strong> Poster at hostel: “Text BUS12 — no app needed.”</td></tr>
+          <tr><th>4</th><td><strong>Theme:</strong> Saving the code · <span class="sev-yellow">🟡 Medium</span><br><strong>Rec:</strong> Reply includes “Save this number as BusPing.”</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🎯 Top 3 Fixes for v2</h4>
+        <div class="filled">
+          <ol>
+            <li>Flexible code parsing + example on first reply.</li>
+            <li>“Leave by HH:MM” line when walk time is known.</li>
+            <li>Prompt to save the service number as a contact.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Most surprising:</strong> Users wanted leave-by time more than a prettier map.</p>
+          <p><strong>2. Ignore for now:</strong> Full multi-language support — important later, not blocking the core test.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 4.6 -->
+  <article class="activity" id="activity-4-6">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 4.6</span><span class="ah-unit">Unit IV</span></div>
+      <h2 class="ah-title">Modify the Prototype</h2>
+      <div class="ah-meta"><span>⏱ 60 min</span><span>👥 Group</span><span>Prototype: BusPing v2</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>Apply only the Top 3 fixes from 4.5.</li>
+          <li>Do not add random new features.</li>
+          <li>Document each change and why.</li>
+          <li>Photograph or note before/after if possible.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>🔧 V1 → V2 Changes — Model Answer</h4>
+        <table class="map-table">
+          <tr><th>1</th><td><strong>Change:</strong> Accept BUS12, bus12, Bus 12 · <strong>Why:</strong> Testers mistyped format.</td></tr>
+          <tr><th>2</th><td><strong>Change:</strong> Reply adds “Leave by 7:42 (8 min walk)” · <strong>Why:</strong> Users asked for decision support.</td></tr>
+          <tr><th>3</th><td><strong>Change:</strong> First reply ends with “Save this number as BusPing” · <strong>Why:</strong> Repeat use was friction.</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Most impactful:</strong> Flexible codes — fewer errors in a quick re-test.</p>
+          <p><strong>2. Not changed:</strong> Live map UI — out of scope for SMS concept; would dilute the core test.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 4.7 -->
+  <article class="activity" id="activity-4-7">
+    <div class="activity-head">
+      <div class="ah-top"><span class="ah-num">🧪 Activity 4.7</span><span class="ah-unit">Unit IV</span></div>
+      <h2 class="ah-title">Prepare an Iteration Log</h2>
+      <div class="ah-meta"><span>⏱ 30 min</span><span>👥 Individual</span><span>Project: BusPing</span></div>
+    </div>
+    <div class="activity-body">
+      <div class="student-flow">
+        <h4>👨‍🏫 What the Student Should Do</h4>
+        <ol>
+          <li>List each version: change, reason, result.</li>
+          <li>Include failures — they teach more than wins.</li>
+          <li>Write a short 3-sentence project summary.</li>
+          <li>Start the log early; do not rely on memory later.</li>
+        </ol>
+      </div>
+      <div class="section">
+        <h4>📓 Iteration Log — Model Answer</h4>
+        <table class="map-table">
+          <tr><th>v1</th><td><strong>Change:</strong> Paper + role-play SMS · <strong>Reason:</strong> Test core “one code → ETA” · <strong>Result:</strong> Concept understood; code format errors</td></tr>
+          <tr><th>v2</th><td><strong>Change:</strong> Flexible codes + leave-by + save prompt · <strong>Reason:</strong> Top 3 fixes from tests · <strong>Result:</strong> Faster completion, fewer errors</td></tr>
+          <tr><th>v3</th><td><strong>Change:</strong> Example in first reply (“Try: BUS12”) · <strong>Reason:</strong> New users still guessed · <strong>Result:</strong> First-time success improved</td></tr>
+          <tr><th>v4</th><td><strong>Change:</strong> Optional walk-time input once · <strong>Reason:</strong> Leave-by needs distance · <strong>Result:</strong> More useful decision support</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h4>📄 3-Sentence Summary</h4>
+        <div class="filled">
+          BusPing helps college students get a real bus ETA by sending one short code, without relying on inaccurate apps.
+          Low-fi tests showed the idea works, but code format and “when should I leave?” needed fixes.
+          After three iterations, users complete the task faster and report less morning anxiety about missing the bus.
+        </div>
+      </div>
+      <div class="section">
+        <h4>🧠 Reflection</h4>
+        <div class="reflection">
+          <p><strong>1. Most teaching iteration:</strong> v1 → v2 — real users exposed assumptions we could not see in sketches.</p>
+          <p><strong>2. Why document:</strong> Teams forget why a change was made; the log keeps evidence for reports and future members.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+</div>
+
+<footer>
+  <div class="sig">@Oyyathevan</div>
+  <div>Model Filled Lab Sheet · Unit IV · Prototyping, Testing &amp; Validation · 2026</div>
+</footer>
+
+<script>
+  document.getElementById('welcomeUser').textContent =
+    'Welcome: ' + (sessionStorage.getItem('lithuUsername') || 'User');
+  document.getElementById('logoutBtn').onclick = function () {
+    sessionStorage.removeItem('lithuLoggedIn');
+    sessionStorage.removeItem('lithuUsername');
+    window.location.href = '../index.html';
+  };
+</script>
+</body>
+</html>
